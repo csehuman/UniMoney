@@ -7,8 +7,12 @@
 
 import UIKit
 
-class TableViewCell: UITableViewCell {
-
+class MoneyTableViewCell: UITableViewCell {
+    @IBOutlet weak var symbolImageView: UIImageView!
+    @IBOutlet weak var moneyContentLabel: UILabel!
+    @IBOutlet weak var moneyCategoryMethodLabel: UILabel!
+    @IBOutlet weak var moneyValueLabel: UILabel!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

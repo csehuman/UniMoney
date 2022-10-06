@@ -17,6 +17,9 @@ class MoneyListViewController: UIViewController {
     
     @IBOutlet weak var addRecordButton: UIButton!
     
+    
+    @IBOutlet weak var tableView: UITableView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -47,7 +50,12 @@ class MoneyListViewController: UIViewController {
         } else {
             // Fallback on earlier versions
         }
-
+        
+        tableView.dataSource = self
+        tableView.delegate = self
+        
+        let nibName = UINib(nibName: "MoneyTableViewCell", bundle: nil)
+        tableView.register(nibName, forCellReuseIdentifier: "MoneyTableViewCell")
     }
     
 
@@ -61,4 +69,24 @@ class MoneyListViewController: UIViewController {
     }
     */
 
+}
+
+extension MoneyListViewController: UITableViewDataSource, UITableViewDelegate {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "MoneyTableViewCell") as? MoneyTableViewCell else { return UITableViewCell() }
+        cell.symbolImageView.image = UIImage(systemName: "fork.knife")
+        cell.moneyContentLabel.text = "점심 - 돈까스 김밥"
+        cell.moneyCategoryMethodLabel.text = "식비 | 현금 | 10월 5일"
+        cell.moneyValueLabel.text = "-5000원"
+        
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 80
+    }
 }
