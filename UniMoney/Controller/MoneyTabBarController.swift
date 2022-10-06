@@ -12,7 +12,8 @@ class MoneyTabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Do any additional setup after loading the view.
+        tabBar.layer.borderColor = UIColor.gray.cgColor
+        tabBar.layer.borderWidth = 0.2
     }
     
 
