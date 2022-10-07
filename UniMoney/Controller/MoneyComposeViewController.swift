@@ -18,6 +18,8 @@ class MoneyComposeViewController: UIViewController {
     
     @IBOutlet weak var saveButton: UIButton!
     
+    @IBOutlet weak var scrollView: UIScrollView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -34,6 +36,17 @@ class MoneyComposeViewController: UIViewController {
         moneyTypeEarnedButton.layer.cornerRadius = 5
         
         saveButton.layer.cornerRadius = 10
+        
+        let recognizer = UITapGestureRecognizer(target: self, action: #selector(self.touch))
+        recognizer.numberOfTapsRequired = 1
+        recognizer.numberOfTouchesRequired = 1
+        scrollView.addGestureRecognizer(recognizer)
+        
+        isModalInPresentation = true
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        presentationController?.delegate = self
     }
     
     @IBAction func moneyValueEditingChanged(_ sender: UITextField) {
@@ -74,8 +87,8 @@ class MoneyComposeViewController: UIViewController {
         dismiss(animated: true)
     }
     
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        view.endEditing(true)
+    @objc func touch() {
+        self.view.endEditing(true)
     }
 }
 
@@ -120,5 +133,26 @@ extension MoneyComposeViewController: UITextFieldDelegate {
     func textFieldDidEndEditing(_ textField: UITextField) {
         moneyValueHelperImageView.alpha = 1.0
         moneyValueTextField.layer.sublayers = []
+    }
+}
+
+extension MoneyComposeViewController: UIAdaptivePresentationControllerDelegate {
+    func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
+        print("HI")
+        let alert = UIAlertController(title: "알림", message: "추가한 내용을 저장할까요?", preferredStyle: .alert)
+        
+        let okAction = UIAlertAction(title: "확인", style: .default) { [weak self] action in
+            // self?.save(action)
+            self?.dismiss(animated: true)
+        }
+        alert.addAction(okAction)
+        
+        let cancelAction = UIAlertAction(title: "취소", style: .cancel) { [weak self] action in
+            self?.dismiss(animated: true)
+            // self?.close(action)
+        }
+        alert.addAction(cancelAction)
+        
+        present(alert, animated: true)
     }
 }
