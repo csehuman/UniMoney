@@ -19,6 +19,7 @@
 		DA13192128EE91AD0055B3D8 /* MoneyComposeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA13192028EE91AD0055B3D8 /* MoneyComposeViewController.swift */; };
 		DA13192628EEC0120055B3D8 /* MoneyTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA13192428EEC0120055B3D8 /* MoneyTableViewCell.swift */; };
 		DA13192728EEC0120055B3D8 /* MoneyTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DA13192528EEC0120055B3D8 /* MoneyTableViewCell.xib */; };
+		DA13192928EFBEE20055B3D8 /* NumberFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA13192828EFBEE20055B3D8 /* NumberFormatter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +37,7 @@
 		DA13192028EE91AD0055B3D8 /* MoneyComposeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoneyComposeViewController.swift; sourceTree = "<group>"; };
 		DA13192428EEC0120055B3D8 /* MoneyTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoneyTableViewCell.swift; sourceTree = "<group>"; };
 		DA13192528EEC0120055B3D8 /* MoneyTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MoneyTableViewCell.xib; sourceTree = "<group>"; };
+		DA13192828EFBEE20055B3D8 /* NumberFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberFormatter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,6 +114,7 @@
 		DA13192228EEACE80055B3D8 /* Formatter */ = {
 			isa = PBXGroup;
 			children = (
+				DA13192828EFBEE20055B3D8 /* NumberFormatter.swift */,
 			);
 			path = Formatter;
 			sourceTree = "<group>";
@@ -204,6 +207,7 @@
 				DA13191B28EE91090055B3D8 /* MoneyListViewController.swift in Sources */,
 				DA13190228EE87450055B3D8 /* AppDelegate.swift in Sources */,
 				DA13191928EE90770055B3D8 /* MoneyTabBarController.swift in Sources */,
+				DA13192928EFBEE20055B3D8 /* NumberFormatter.swift in Sources */,
 				DA13190428EE87450055B3D8 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

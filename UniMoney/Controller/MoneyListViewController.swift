@@ -39,6 +39,7 @@ class MoneyListViewController: UIViewController {
         
         
         addRecordButton.layer.cornerRadius = 10
+        
         if #available(iOS 15.0, *) {
             var configuration = UIButton.Configuration.filled()
             configuration.title = "추가하기"
