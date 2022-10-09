@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import RealmSwift
 
 class MoneyListViewController: UIViewController {
 
@@ -17,8 +18,11 @@ class MoneyListViewController: UIViewController {
     
     @IBOutlet weak var addRecordButton: UIButton!
     
-    
     @IBOutlet weak var tableView: UITableView!
+    
+    var moneyRecords: Results<MoneyRecord>?
+    
+    let realm = try! Realm()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -57,6 +61,11 @@ class MoneyListViewController: UIViewController {
         
         let nibName = UINib(nibName: "MoneyTableViewCell", bundle: nil)
         tableView.register(nibName, forCellReuseIdentifier: "MoneyTableViewCell")
+        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        moneyRecords = realm.objects(MoneyRecord.self).sorted(byKeyPath: "date", ascending: false)
     }
     
 
@@ -74,20 +83,31 @@ class MoneyListViewController: UIViewController {
 
 extension MoneyListViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 50
+        return moneyRecords?.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "MoneyTableViewCell") as? MoneyTableViewCell else { return UITableViewCell() }
-        cell.symbolImageView.image = UIImage(systemName: "fork.knife")
-        cell.moneyContentLabel.text = "점심 - 돈까스 김밥"
-        cell.moneyCategoryMethodLabel.text = "식비 | 현금 | 10월 5일"
-        cell.moneyValueLabel.text = "-5000원"
+        guard let moneyRecord = moneyRecords?[indexPath.row], let category = moneyRecord.category, let paymentMethod = moneyRecord.paymentMethod else { return UITableViewCell() }
+        
+        cell.symbolImageView.image = UIImage(systemName: category.imageName)
+        cell.moneyContentLabel.text = moneyRecord.content
+        cell.moneyCategoryMethodLabel.text = "\(category.name) | \(paymentMethod.name) | \(moneyRecord.date.dateString)"
+        cell.moneyValueLabel.text = moneyRecord.type == "지출" ? "-\(moneyRecord.value)원" : "\(moneyRecord.value)원"
+        cell.moneyValueLabel.textColor = moneyRecord.type == "지출" ? .systemRed : .systemPurple
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 60
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let moneyComposeNavVC = storyboard?.instantiateViewController(withIdentifier: "MoneyRecordNavigationController") as? UINavigationController, let moneyComposeVC = moneyComposeNavVC.children.first as? MoneyComposeViewController else { return }
+        
+        moneyComposeVC.moneyRecordToEdit = moneyRecords?[indexPath.row]
+        
+        present(moneyComposeNavVC, animated: true)
     }
 }
