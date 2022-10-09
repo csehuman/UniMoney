@@ -21,7 +21,7 @@ class DataPopulation {
             ("자동차", "지출", "car"), ("주거/통신", "지출", "house"), ("의료/건강", "지출", "cross.case"), ("금융", "지출", "wonsign.circle"),
             ("문화/여가", "지출", "ticket"), ("여행/숙박", "지출", "airplane.departure"), ("교육/학습", "지출", "graduationcap"), ("자녀/육아", "지출", "person.2"),
             ("반려동물", "지출", "pawprint"), ("경조/선물", "지출", "gift"),
-            ("급여", "수입", ""), ("용돈", "수입", ""), ("금융수입", "수입", ""), ("사업수입", "수입", ""), ("기타수입", "수입", "")
+            ("급여", "수입", "envelope"), ("용돈", "수입", "giftcard"), ("금융수입", "수입", "bolt.circle"), ("사업수입", "수입", "barcode"), ("기타수입", "수입", "wallet.pass")
         ]
         
         initialCategories.forEach {
