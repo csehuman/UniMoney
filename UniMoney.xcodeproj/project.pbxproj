@@ -25,6 +25,7 @@
 		DA84CD5328F04DCF00354CC4 /* CategoryEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA84CD5228F04DCF00354CC4 /* CategoryEditViewController.swift */; };
 		DA84CD5528F0505F00354CC4 /* DateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA84CD5428F0505F00354CC4 /* DateFormatter.swift */; };
 		DA84CD5728F2AEA700354CC4 /* MoneyRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA84CD5628F2AEA700354CC4 /* MoneyRecord.swift */; };
+		DA84CD5928F2B69F00354CC4 /* DataPopulation+InitialLaunch.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA84CD5828F2B69F00354CC4 /* DataPopulation+InitialLaunch.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,6 +51,7 @@
 		DA84CD5228F04DCF00354CC4 /* CategoryEditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryEditViewController.swift; sourceTree = "<group>"; };
 		DA84CD5428F0505F00354CC4 /* DateFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormatter.swift; sourceTree = "<group>"; };
 		DA84CD5628F2AEA700354CC4 /* MoneyRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoneyRecord.swift; sourceTree = "<group>"; };
+		DA84CD5828F2B69F00354CC4 /* DataPopulation+InitialLaunch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataPopulation+InitialLaunch.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,6 +130,7 @@
 			isa = PBXGroup;
 			children = (
 				DA84CD5628F2AEA700354CC4 /* MoneyRecord.swift */,
+				DA84CD5828F2B69F00354CC4 /* DataPopulation+InitialLaunch.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -290,6 +293,7 @@
 				DA84CD5128EFFC8200354CC4 /* CategoryCollectionViewCell.swift in Sources */,
 				DA13191928EE90770055B3D8 /* MoneyTabBarController.swift in Sources */,
 				DA13192928EFBEE20055B3D8 /* NumberFormatter.swift in Sources */,
+				DA84CD5928F2B69F00354CC4 /* DataPopulation+InitialLaunch.swift in Sources */,
 				DA84CD5728F2AEA700354CC4 /* MoneyRecord.swift in Sources */,
 				DA84CD5328F04DCF00354CC4 /* CategoryEditViewController.swift in Sources */,
 				DA13190428EE87450055B3D8 /* SceneDelegate.swift in Sources */,

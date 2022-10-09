@@ -6,6 +6,9 @@
 //
 
 import UIKit
+import RealmSwift
+
+let initialLaunchKey = "initialLaunchKey"
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -14,6 +17,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        let config = Realm.Configuration(schemaVersion: 2)
+        Realm.Configuration.defaultConfiguration = config
+        
+        if !UserDefaults.standard.bool(forKey: initialLaunchKey) {
+            DataPopulation.shared.setUpCategories()
+            DataPopulation.shared.setUpPaymentMethods()
+
+            print("Initial Launch")
+            print(Realm.Configuration.defaultConfiguration.fileURL!)
+            
+            UserDefaults.standard.set(true, forKey: initialLaunchKey)
+        }
         return true
     }
 

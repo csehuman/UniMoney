@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import RealmSwift
 
 class MoneyComposeViewController: UIViewController {
     @IBOutlet weak var moneyValueTextField: UITextField!
@@ -32,6 +33,11 @@ class MoneyComposeViewController: UIViewController {
     @IBOutlet weak var moneyDateTextField: UITextField!
     
     let datePicker = UIDatePicker()
+    
+    let realm = try! Realm()
+    
+    var categories: Results<Category>?
+    var paymentMethods: Results<PaymentMethod>?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -122,6 +128,9 @@ class MoneyComposeViewController: UIViewController {
         recognizer.numberOfTouchesRequired = 1
         scrollView.addGestureRecognizer(recognizer)
         
+        categories = realm.objects(Category.self).filter("type == %@", "지출").sorted(byKeyPath: "order", ascending: true)
+        paymentMethods = realm.objects(PaymentMethod.self).sorted(byKeyPath: "order", ascending: true)
+        
         isModalInPresentation = true
     }
     
@@ -174,6 +183,44 @@ class MoneyComposeViewController: UIViewController {
         vc.navigationController?.navigationBar.isHidden = true
         
         navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    
+    @IBAction func saveButtonTapped(_ sender: UIButton) {
+//        let realm = try! Realm()
+//        let moneyRecord = MoneyRecord()
+//        let testCategory = Category()
+//        let testPaymentMethod = PaymentMethod()
+//
+//        moneyRecord.value = 50000
+//        moneyRecord.type = "지출"
+//        moneyRecord.content = "점심 밥"
+//        moneyRecord.date = Date()
+//
+//        testCategory.name = "음식"
+//        testCategory.type = "지출"
+//        testCategory.imageName = "fork.knife"
+//
+//        testPaymentMethod.name = "현금"
+//
+//        moneyRecord.paymentMethod = testPaymentMethod
+//        moneyRecord.category = testCategory
+//
+//        try! realm.write {
+//            realm.add(testCategory)
+//            realm.add(testPaymentMethod)
+//            realm.add(moneyRecord)
+//        }
+//
+//        let moneyRecords = realm.objects(MoneyRecord.self)
+//        if moneyRecords.count > 0 {
+//            print(moneyRecords[0].content)
+//        }
+//
+//        let categoryRecords = realm.objects(Category.self)
+//        if categoryRecords.count > 0 {
+//            print(categoryRecords[0].name)
+//        }
     }
     
     @IBAction func closeButtonTapped(_ sender: Any) {
@@ -262,14 +309,14 @@ extension MoneyComposeViewController: UICollectionViewDelegateFlowLayout {
 
 extension MoneyComposeViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 18
+        return categories?.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CategoryCollectionViewCell", for: indexPath) as? CategoryCollectionViewCell else { return UICollectionViewCell() }
         
-        cell.iconImageView.image = UIImage(systemName: "fork.knife")
-        cell.categoryLabel.text = "식비"
+        cell.iconImageView.image = UIImage(systemName: categories?[indexPath.row].imageName ?? "")
+        cell.categoryLabel.text = categories?[indexPath.row].name
         
         return cell
     }
@@ -277,13 +324,13 @@ extension MoneyComposeViewController: UICollectionViewDataSource, UICollectionVi
 
 extension MoneyComposeViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return paymentMethods?.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "PaymentMethodCell", for: indexPath)
         
-        cell.textLabel?.text = "현금"
+        cell.textLabel?.text = paymentMethods?[indexPath.row].name
 
         return cell
     }
