@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		503D0784E5660CB8B00A679B /* Pods_UniMoney.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 217B2A9B29A41D825BB4AD9C /* Pods_UniMoney.framework */; };
 		DA13190228EE87450055B3D8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA13190128EE87450055B3D8 /* AppDelegate.swift */; };
 		DA13190428EE87450055B3D8 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA13190328EE87450055B3D8 /* SceneDelegate.swift */; };
 		DA13190928EE87450055B3D8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DA13190728EE87450055B3D8 /* Main.storyboard */; };
@@ -23,9 +24,13 @@
 		DA84CD5128EFFC8200354CC4 /* CategoryCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA84CD5028EFFC8200354CC4 /* CategoryCollectionViewCell.swift */; };
 		DA84CD5328F04DCF00354CC4 /* CategoryEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA84CD5228F04DCF00354CC4 /* CategoryEditViewController.swift */; };
 		DA84CD5528F0505F00354CC4 /* DateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA84CD5428F0505F00354CC4 /* DateFormatter.swift */; };
+		DA84CD5728F2AEA700354CC4 /* MoneyRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA84CD5628F2AEA700354CC4 /* MoneyRecord.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		217B2A9B29A41D825BB4AD9C /* Pods_UniMoney.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UniMoney.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		508A72E9BDE02876CE33358A /* Pods-UniMoney.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UniMoney.release.xcconfig"; path = "Target Support Files/Pods-UniMoney/Pods-UniMoney.release.xcconfig"; sourceTree = "<group>"; };
+		710A7B7894C96C7595AF2C68 /* Pods-UniMoney.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UniMoney.debug.xcconfig"; path = "Target Support Files/Pods-UniMoney/Pods-UniMoney.debug.xcconfig"; sourceTree = "<group>"; };
 		DA1318FE28EE87450055B3D8 /* UniMoney.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UniMoney.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA13190128EE87450055B3D8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DA13190328EE87450055B3D8 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -44,6 +49,7 @@
 		DA84CD5028EFFC8200354CC4 /* CategoryCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryCollectionViewCell.swift; sourceTree = "<group>"; };
 		DA84CD5228F04DCF00354CC4 /* CategoryEditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryEditViewController.swift; sourceTree = "<group>"; };
 		DA84CD5428F0505F00354CC4 /* DateFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormatter.swift; sourceTree = "<group>"; };
+		DA84CD5628F2AEA700354CC4 /* MoneyRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoneyRecord.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,17 +57,37 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				503D0784E5660CB8B00A679B /* Pods_UniMoney.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		AB43DAEB974ACE6661E05930 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				217B2A9B29A41D825BB4AD9C /* Pods_UniMoney.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		AC3AA72F6DFD2FBDC6A3E2BF /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				710A7B7894C96C7595AF2C68 /* Pods-UniMoney.debug.xcconfig */,
+				508A72E9BDE02876CE33358A /* Pods-UniMoney.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		DA1318F528EE87450055B3D8 = {
 			isa = PBXGroup;
 			children = (
 				DA13190028EE87450055B3D8 /* UniMoney */,
 				DA1318FF28EE87450055B3D8 /* Products */,
+				AC3AA72F6DFD2FBDC6A3E2BF /* Pods */,
+				AB43DAEB974ACE6661E05930 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -101,6 +127,7 @@
 		DA13191628EE89950055B3D8 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				DA84CD5628F2AEA700354CC4 /* MoneyRecord.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -144,9 +171,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = DA13191228EE87470055B3D8 /* Build configuration list for PBXNativeTarget "UniMoney" */;
 			buildPhases = (
+				221608735CBF4288AB954BC3 /* [CP] Check Pods Manifest.lock */,
 				DA1318FA28EE87450055B3D8 /* Sources */,
 				DA1318FB28EE87450055B3D8 /* Frameworks */,
 				DA1318FC28EE87450055B3D8 /* Resources */,
+				6F6ECB3730F136BCB557DD3D /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -204,6 +233,48 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		221608735CBF4288AB954BC3 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-UniMoney-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		6F6ECB3730F136BCB557DD3D /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-UniMoney/Pods-UniMoney-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-UniMoney/Pods-UniMoney-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-UniMoney/Pods-UniMoney-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		DA1318FA28EE87450055B3D8 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -219,6 +290,7 @@
 				DA84CD5128EFFC8200354CC4 /* CategoryCollectionViewCell.swift in Sources */,
 				DA13191928EE90770055B3D8 /* MoneyTabBarController.swift in Sources */,
 				DA13192928EFBEE20055B3D8 /* NumberFormatter.swift in Sources */,
+				DA84CD5728F2AEA700354CC4 /* MoneyRecord.swift in Sources */,
 				DA84CD5328F04DCF00354CC4 /* CategoryEditViewController.swift in Sources */,
 				DA13190428EE87450055B3D8 /* SceneDelegate.swift in Sources */,
 			);
@@ -362,6 +434,7 @@
 		};
 		DA13191328EE87470055B3D8 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 710A7B7894C96C7595AF2C68 /* Pods-UniMoney.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -394,6 +467,7 @@
 		};
 		DA13191428EE87470055B3D8 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 508A72E9BDE02876CE33358A /* Pods-UniMoney.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
