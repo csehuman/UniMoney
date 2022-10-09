@@ -32,10 +32,10 @@ class MoneyListViewController: UIViewController {
         
         earningView.layer.cornerRadius = 5
         earningView.backgroundColor = .white
-        earningView.layer.borderColor = UIColor.systemGreen.cgColor
+        earningView.layer.borderColor = UIColor.systemPurple.cgColor
         earningView.layer.borderWidth = 0.5
         
-        earnedMoneyLabel.textColor = .systemGreen
+        earnedMoneyLabel.textColor = .systemPurple
         
         
         addRecordButton.layer.cornerRadius = 10
