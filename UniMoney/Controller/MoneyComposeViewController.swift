@@ -21,6 +21,8 @@ class MoneyComposeViewController: UIViewController {
     
     @IBOutlet weak var scrollView: UIScrollView!
     
+    @IBOutlet weak var moneyContentTextField: UITextField!
+    
     @IBOutlet weak var moneyCategoryTextField: UITextField!
     @IBOutlet weak var categoryView: UIView!
     @IBOutlet weak var categoryCollectionView: UICollectionView!
@@ -38,6 +40,15 @@ class MoneyComposeViewController: UIViewController {
     
     var categories: Results<Category>?
     var paymentMethods: Results<PaymentMethod>?
+    
+    var myValue: Int?
+    var myType: String = "지출"
+    var myContent: String?
+    var myCategory: Category?
+    var myPaymentMethod: PaymentMethod?
+    var myDate: Date?
+    
+    var moneyRecordToEdit: MoneyRecord?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -58,9 +69,10 @@ class MoneyComposeViewController: UIViewController {
         okButton.leadingAnchor.constraint(equalTo: myView.leadingAnchor).isActive = true
         okButton.trailingAnchor.constraint(equalTo: myView.trailingAnchor).isActive = true
         
+        okButton.addTarget(self, action: #selector(valueOkButtonTapped), for: .touchUpInside)
+        
         moneyValueTextField.inputAccessoryView = myView
         
-        moneyValueTextField.becomeFirstResponder()
         moneyValueTextField.delegate = self
         
         // MoneyType
@@ -73,6 +85,9 @@ class MoneyComposeViewController: UIViewController {
         moneyTypeEarnedButton.layer.borderWidth = 0.5
         moneyTypeEarnedButton.layer.cornerRadius = 5
         
+        // MoneyContentTextField
+        moneyContentTextField.delegate = self
+        
         // MoneyCategoryTextField
         moneyCategoryTextField.inputView = categoryView
         moneyCategoryTextField.delegate = self
@@ -82,13 +97,17 @@ class MoneyComposeViewController: UIViewController {
         categoryCollectionView.delegate = self
         categoryCollectionView.collectionViewLayout = UICollectionViewFlowLayout()
         
+        let font = UIFont.systemFont(ofSize: 14)
+        
         let categoryToolBar = UIToolbar()
         categoryToolBar.sizeToFit()
         let categoryInfoButton = UIBarButtonItem(title: "카테고리", style: .plain, target: self, action: nil)
         categoryInfoButton.tintColor = .systemGray2
+        categoryInfoButton.setTitleTextAttributes([NSAttributedString.Key.font: font], for: .normal)
         let spaceButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: nil, action: nil)
         let categoryEditButton = UIBarButtonItem(title: "편집", style: .plain, target: self, action: #selector(categoryEditButtonTapped))
         categoryEditButton.tintColor = .black
+        categoryEditButton.setTitleTextAttributes([NSAttributedString.Key.font: font], for: .normal)
         categoryToolBar.setItems([categoryInfoButton, spaceButton, categoryEditButton], animated: false)
         moneyCategoryTextField.inputAccessoryView = categoryToolBar
         
@@ -98,6 +117,14 @@ class MoneyComposeViewController: UIViewController {
         
         paymentMethodTableView.dataSource = self
         paymentMethodTableView.delegate = self
+        
+        let pmToolBar = UIToolbar()
+        pmToolBar.sizeToFit()
+        let pmInfoButton = UIBarButtonItem(title: "결제수단", style: .plain, target: self, action: nil)
+        pmInfoButton.setTitleTextAttributes([NSAttributedString.Key.font: font], for: .normal)
+        pmInfoButton.tintColor = .systemGray2
+        pmToolBar.setItems([pmInfoButton], animated: false)
+        moneyPaymentMethodTextField.inputAccessoryView = pmToolBar
         
         // MoneyDateTextField
         datePicker.datePickerMode = .dateAndTime
@@ -110,10 +137,13 @@ class MoneyComposeViewController: UIViewController {
         toolBar.sizeToFit()
         let infoButton = UIBarButtonItem(title: "날짜", style: .plain, target: self, action: nil)
         infoButton.tintColor = .systemGray2
+        infoButton.setTitleTextAttributes([NSAttributedString.Key.font: font], for: .normal)
         let doneButton = UIBarButtonItem(title: "완료", style: .plain, target: self, action: #selector(dateDoneButtonTapped))
         doneButton.tintColor = .systemPurple
+        doneButton.setTitleTextAttributes([NSAttributedString.Key.font: font], for: .normal)
         toolBar.setItems([infoButton, spaceButton, doneButton], animated: false)
         
+        moneyDateTextField.text = datePicker.date.dateStringWithTimeAmPm
         moneyDateTextField.inputAccessoryView = toolBar
         moneyDateTextField.inputView = datePicker
         moneyDateTextField.delegate = self
@@ -130,6 +160,39 @@ class MoneyComposeViewController: UIViewController {
         
         categories = realm.objects(Category.self).filter("type == %@", "지출").sorted(byKeyPath: "order", ascending: true)
         paymentMethods = realm.objects(PaymentMethod.self).sorted(byKeyPath: "order", ascending: true)
+        
+        if let moneyRecordToEdit = moneyRecordToEdit {
+            myValue = moneyRecordToEdit.value
+            myType = moneyRecordToEdit.type
+            myContent = moneyRecordToEdit.content
+            myCategory = moneyRecordToEdit.category
+            myPaymentMethod = moneyRecordToEdit.paymentMethod
+            myDate = moneyRecordToEdit.date
+            
+            moneyValueTextField.text = "\(moneyRecordToEdit.value)"
+            moneyRecordToEdit.type == "지출" ? moneyTypeSpentButtonTapped(nil) : moneyTypeEarnedButtonTapped(nil)
+            moneyContentTextField.text = moneyRecordToEdit.content
+            moneyCategoryTextField.text = moneyRecordToEdit.category?.name
+            moneyPaymentMethodTextField.text = moneyRecordToEdit.paymentMethod?.name
+            moneyDateTextField.text = moneyRecordToEdit.date.dateStringWithTimeAmPm
+            
+            guard let number = moneyValueTextField.text?.textToNumber, let finalText = number.numberToText else {
+                moneyValueWonLabelLeadingConstraint.constant = 25
+                return
+            }
+            
+            moneyValueTextField.text = finalText
+            
+            let font = moneyValueTextField.font ?? UIFont.systemFont(ofSize: 45, weight: .semibold)
+            
+            let dict = [NSAttributedString.Key.font: font]
+            
+            let width = finalText.size(withAttributes: dict).width
+
+            moneyValueWonLabelLeadingConstraint.constant = width + 25
+        } else {
+            moneyValueTextField.becomeFirstResponder()
+        }
         
         isModalInPresentation = true
     }
@@ -156,24 +219,39 @@ class MoneyComposeViewController: UIViewController {
         moneyValueWonLabelLeadingConstraint.constant = width + 25
     }
     
-    @IBAction func moneyTypeSpentButtonTapped(_ sender: UIButton) {
+    @IBAction func moneyTypeSpentButtonTapped(_ sender: UIButton?) {
         moneyTypeSpentButton.setTitleColor(.systemRed, for: .normal)
         moneyTypeSpentButton.layer.borderColor = UIColor.systemRed.cgColor
         
         moneyTypeEarnedButton.setTitleColor(.systemGray2, for: .normal)
         moneyTypeEarnedButton.layer.borderColor = UIColor.systemGray2.cgColor
+        
+        myType = "지출"
+        
+        categories = realm.objects(Category.self).filter("type == %@", "지출").sorted(byKeyPath: "order", ascending: true)
+        categoryCollectionView.reloadData()
     }
     
-    @IBAction func moneyTypeEarnedButtonTapped(_ sender: UIButton) {
+    @IBAction func moneyTypeEarnedButtonTapped(_ sender: UIButton?) {
         moneyTypeEarnedButton.setTitleColor(.systemPurple, for: .normal)
         moneyTypeEarnedButton.layer.borderColor = UIColor.systemPurple.cgColor
         
         moneyTypeSpentButton.setTitleColor(.systemGray2, for: .normal)
         moneyTypeSpentButton.layer.borderColor = UIColor.systemGray2.cgColor
+        
+        myType = "수입"
+        
+        categories = realm.objects(Category.self).filter("type == %@", "수입").sorted(byKeyPath: "order", ascending: true)
+        categoryCollectionView.reloadData()
+    }
+    
+    @objc func valueOkButtonTapped(_ sender: UIButton) {
+        moneyValueTextField.resignFirstResponder()
     }
     
     @objc func dateDoneButtonTapped(_ sender: UIButton) {
         moneyDateTextField.text = datePicker.date.dateStringWithTimeAmPm
+        myDate = datePicker.date
         moneyDateTextField.resignFirstResponder()
     }
     
@@ -185,42 +263,44 @@ class MoneyComposeViewController: UIViewController {
         navigationController?.pushViewController(vc, animated: true)
     }
     
-    
     @IBAction func saveButtonTapped(_ sender: UIButton) {
-//        let realm = try! Realm()
-//        let moneyRecord = MoneyRecord()
-//        let testCategory = Category()
-//        let testPaymentMethod = PaymentMethod()
-//
-//        moneyRecord.value = 50000
-//        moneyRecord.type = "지출"
-//        moneyRecord.content = "점심 밥"
-//        moneyRecord.date = Date()
-//
-//        testCategory.name = "음식"
-//        testCategory.type = "지출"
-//        testCategory.imageName = "fork.knife"
-//
-//        testPaymentMethod.name = "현금"
-//
-//        moneyRecord.paymentMethod = testPaymentMethod
-//        moneyRecord.category = testCategory
-//
-//        try! realm.write {
-//            realm.add(testCategory)
-//            realm.add(testPaymentMethod)
-//            realm.add(moneyRecord)
-//        }
-//
-//        let moneyRecords = realm.objects(MoneyRecord.self)
-//        if moneyRecords.count > 0 {
-//            print(moneyRecords[0].content)
-//        }
-//
-//        let categoryRecords = realm.objects(Category.self)
-//        if categoryRecords.count > 0 {
-//            print(categoryRecords[0].name)
-//        }
+        guard let myValue = myValue, let myContent = myContent, let myCategory = myCategory, let myPaymentMethod = myPaymentMethod, let myDate = myDate else {
+            var alertString = ""
+            
+            if myValue == nil {
+                alertString = "금액을 입력해주세요."
+            } else if myContent == nil {
+                alertString = "내용을 입력해주세요."
+            } else if myCategory == nil {
+                alertString = "카테고리를 선택해주세요."
+            } else if myPaymentMethod == nil {
+                alertString = "결제수단을 선택해주세요."
+            }
+            
+            let alert = UIAlertController(title: alertString, message: nil, preferredStyle: .alert)
+            let okAction = UIAlertAction(title: "확인", style: .default)
+            alert.addAction(okAction)
+            
+            if alertString.count > 0 {
+                present(alert, animated: true)
+            }
+            
+            return
+        }
+        
+        if let moneyRecordToEdit = moneyRecordToEdit {
+            try! realm.write {
+                moneyRecordToEdit.setValuesForKeys(["value": myValue, "type": myType, "content": myContent, "date": myDate, "category": myCategory, "paymentMethod": myPaymentMethod])
+            }
+        } else {
+            let newMoneyRecord = MoneyRecord(value: myValue, type: myType, content: myContent, date: myDate, category: myCategory, paymentMethod: myPaymentMethod)
+            
+            try! realm.write {
+                realm.add(newMoneyRecord)
+            }
+        }
+        
+        dismiss(animated: true)
     }
     
     @IBAction func closeButtonTapped(_ sender: Any) {
@@ -244,9 +324,9 @@ extension MoneyComposeViewController: UITextFieldDelegate {
             
             moneyValueHelperImageView.alpha = 0.0
         case moneyCategoryTextField:
-            categoryView.isHidden = false
+            self.categoryView.isHidden = false
         case moneyPaymentMethodTextField:
-            paymentMethodView.isHidden = false
+            self.paymentMethodView.isHidden = false
         default:
             break
         }
@@ -291,12 +371,29 @@ extension MoneyComposeViewController: UITextFieldDelegate {
         case moneyValueTextField:
             moneyValueHelperImageView.alpha = 1.0
             moneyValueTextField.layer.sublayers = []
+            myValue = moneyValueTextField.text?.textToNumber?.intValue
+        case moneyContentTextField:
+            myContent = moneyContentTextField.text?.count ?? 0 > 0 ? moneyContentTextField.text : nil
         case moneyCategoryTextField:
             categoryView.isHidden = true
         case moneyPaymentMethodTextField:
             paymentMethodView.isHidden = true
         default:
             break
+        }
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        switch textField {
+        case moneyValueTextField:
+            moneyValueTextField.resignFirstResponder()
+            return true
+        case moneyContentTextField:
+            moneyContentTextField.resignFirstResponder()
+            moneyCategoryTextField.becomeFirstResponder()
+            return true
+        default:
+            return true
         }
     }
 }
@@ -320,6 +417,14 @@ extension MoneyComposeViewController: UICollectionViewDataSource, UICollectionVi
         
         return cell
     }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        myCategory = categories?[indexPath.row]
+        moneyCategoryTextField.text = myCategory?.name
+        
+        moneyCategoryTextField.resignFirstResponder()
+        moneyPaymentMethodTextField.becomeFirstResponder()
+    }
 }
 
 extension MoneyComposeViewController: UITableViewDataSource, UITableViewDelegate {
@@ -333,6 +438,14 @@ extension MoneyComposeViewController: UITableViewDataSource, UITableViewDelegate
         cell.textLabel?.text = paymentMethods?[indexPath.row].name
 
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        myPaymentMethod = paymentMethods?[indexPath.row]
+        moneyPaymentMethodTextField.text = myPaymentMethod?.name
+        
+        moneyPaymentMethodTextField.resignFirstResponder()
+        moneyDateTextField.becomeFirstResponder()
     }
 }
 

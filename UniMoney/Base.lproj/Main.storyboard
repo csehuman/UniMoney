@@ -133,21 +133,21 @@
                                     <constraint firstItem="8dL-wz-5JN" firstAttribute="centerY" secondItem="FMy-ih-9mO" secondAttribute="centerY" constant="-50" id="W8c-qC-WaF"/>
                                 </constraints>
                             </view>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="RLc-po-GB9">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="RLc-po-GB9">
                                 <rect key="frame" x="0.0" y="266" width="428" height="577"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <view key="tableHeaderView" contentMode="scaleToFill" id="pVe-q6-sKI">
                                     <rect key="frame" x="0.0" y="0.0" width="428" height="40"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vhw-SO-e6N">
+                                        <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vhw-SO-e6N">
                                             <rect key="frame" x="21" y="11" width="42" height="21"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pl3-RR-9xN">
+                                        <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pl3-RR-9xN">
                                             <rect key="frame" x="345" y="5" width="75" height="35"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <state key="normal" title="Button"/>
@@ -157,7 +157,7 @@
                                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 </view>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="qzd-5G-VnL" customClass="MoneyTableViewCell" customModule="UniMoney" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" id="qzd-5G-VnL" customClass="MoneyTableViewCell" customModule="UniMoney" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="90" width="428" height="43.666667938232422"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="qzd-5G-VnL" id="sWY-iQ-Z5v">
@@ -361,7 +361,7 @@
         <!--Navigation Controller-->
         <scene sceneID="VHc-K2-rQw">
             <objects>
-                <navigationController id="thn-Ux-415" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="MoneyRecordNavigationController" id="thn-Ux-415" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="Nml-EV-JPc">
                         <rect key="frame" x="0.0" y="0.0" width="428" height="56"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -377,7 +377,7 @@
         <!--Money Compose View Controller-->
         <scene sceneID="GOw-S3-dpn">
             <objects>
-                <viewController hidesBottomBarWhenPushed="YES" id="PMh-EP-3ns" customClass="MoneyComposeViewController" customModule="UniMoney" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MoneyComposeViewController" hidesBottomBarWhenPushed="YES" id="PMh-EP-3ns" customClass="MoneyComposeViewController" customModule="UniMoney" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="ROX-rg-dzG">
                         <rect key="frame" x="0.0" y="0.0" width="428" height="869"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -732,6 +732,9 @@
                                 <state key="normal" title="저장하기">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
+                                <connections>
+                                    <action selector="saveButtonTapped:" destination="PMh-EP-3ns" eventType="touchUpInside" id="rgJ-Jq-2MB"/>
+                                </connections>
                             </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="njL-wv-wKd"/>
@@ -768,6 +771,7 @@
                         <outlet property="categoryView" destination="wUU-Lm-70C" id="4Ez-wo-8Tf"/>
                         <outlet property="categoryViewTopConstraint" destination="ybP-Q9-n3v" id="SNs-PE-EC8"/>
                         <outlet property="moneyCategoryTextField" destination="HFr-5F-SGZ" id="ubd-z4-Tcr"/>
+                        <outlet property="moneyContentTextField" destination="xOI-NQ-xfO" id="CHw-Hy-WPG"/>
                         <outlet property="moneyDateTextField" destination="LyP-sR-PP9" id="VV7-YA-TZ7"/>
                         <outlet property="moneyPaymentMethodTextField" destination="XLM-r8-fQy" id="3zW-DB-BJY"/>
                         <outlet property="moneyTypeEarnedButton" destination="vAh-3i-lel" id="NB3-3g-zqB"/>
