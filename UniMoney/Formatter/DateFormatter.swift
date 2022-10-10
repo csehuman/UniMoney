@@ -10,6 +10,7 @@ import Foundation
 fileprivate let dateFormatter: DateFormatter = {
     let f = DateFormatter()
     f.locale = Locale(identifier: "ko_kr")
+    f.timeZone = TimeZone(abbreviation: "KST")
     return f
 }()
 
@@ -21,6 +22,21 @@ extension Date {
     
     var dateStringWithTimeAmPm: String {
         dateFormatter.dateFormat = "M월 d일 a hh:mm"
+        return dateFormatter.string(from: self)
+    }
+    
+    var yearString: String {
+        dateFormatter.dateFormat = "yyyy년"
+        return dateFormatter.string(from: self)
+    }
+    
+    var monthString: String {
+        dateFormatter.dateFormat = "M월"
+        return dateFormatter.string(from: self)
+    }
+    
+    var yearMonthString: String {
+        dateFormatter.dateFormat = "yyyy년 M월"
         return dateFormatter.string(from: self)
     }
     

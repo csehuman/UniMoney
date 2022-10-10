@@ -158,6 +158,8 @@ class MoneyComposeViewController: UIViewController {
             }
         }
         
+        NotificationCenter.default.post(name: NSNotification.Name("moneyRecordSaved"), object: nil)
+        
         dismiss(animated: true)
     }
     

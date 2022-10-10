@@ -211,12 +211,18 @@
                         <leftBarButtonItems>
                             <barButtonItem title="◀︎" id="tOI-PJ-gB7">
                                 <color key="tintColor" systemColor="systemPurpleColor"/>
+                                <connections>
+                                    <action selector="previousDateButtonTapped:" destination="BJg-LH-w5N" id="aMG-Kd-inb"/>
+                                </connections>
                             </barButtonItem>
                             <barButtonItem title="오늘 (10월 6일)" id="N9Z-Oa-fHs">
                                 <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </barButtonItem>
                             <barButtonItem title="▶︎" id="hpd-Fu-DBB">
                                 <color key="tintColor" systemColor="systemPurpleColor"/>
+                                <connections>
+                                    <action selector="nextDateButtonTapped:" destination="BJg-LH-w5N" id="Daz-h9-q5o"/>
+                                </connections>
                             </barButtonItem>
                         </leftBarButtonItems>
                         <barButtonItem key="rightBarButtonItem" style="plain" id="57F-YL-Ra2">
@@ -229,17 +235,22 @@
                                     <segment title="년"/>
                                 </segments>
                                 <color key="selectedSegmentTintColor" systemColor="systemPurpleColor"/>
+                                <connections>
+                                    <action selector="segmentedControlValueChanged:" destination="BJg-LH-w5N" eventType="valueChanged" id="xdW-pt-xtx"/>
+                                </connections>
                             </segmentedControl>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="addRecordButton" destination="XIz-nQ-Y2J" id="5sW-tb-mRM"/>
+                        <outlet property="dateLabelBarButtonItem" destination="N9Z-Oa-fHs" id="IIt-kd-W1u"/>
                         <outlet property="earnedMoneyLabel" destination="QFs-Yl-L0H" id="XCI-SS-fQS"/>
                         <outlet property="earningView" destination="m5f-4a-Njv" id="Gso-kA-Aqa"/>
                         <outlet property="emptyView" destination="FMy-ih-9mO" id="Cz6-wG-IsW"/>
                         <outlet property="spendingView" destination="F56-SJ-BaY" id="m0M-gQ-o3j"/>
                         <outlet property="spentMoneyLabel" destination="Nyg-US-C7q" id="Nag-Kf-gmx"/>
                         <outlet property="tableView" destination="RLc-po-GB9" id="dIL-kJ-mbA"/>
+                        <outlet property="totalLabel" destination="1nk-6a-Qvr" id="jxv-nV-GKg"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="JkV-3M-SeF" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -939,7 +950,6 @@
                             </imageView>
                             <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="카테고리 이름을 입력해주세요." minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="rij-8Z-33U">
                                 <rect key="frame" x="80" y="121.33333333333333" width="333" height="19.666666666666671"/>
-                                <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
