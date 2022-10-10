@@ -18,11 +18,12 @@ class MoneyListViewController: UIViewController {
     
     @IBOutlet weak var addRecordButton: UIButton!
     
+    @IBOutlet weak var emptyView: UIView!
     @IBOutlet weak var tableView: UITableView!
     
     var moneyRecords: Results<MoneyRecord>?
     
-    let realm = try! Realm()
+    let realm = DataPopulation.shared.realm
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -66,6 +67,14 @@ class MoneyListViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         moneyRecords = realm.objects(MoneyRecord.self).sorted(byKeyPath: "date", ascending: false)
+        
+        if moneyRecords?.count ?? 0 == 0 {
+            emptyView.isHidden = false
+            tableView.isHidden = true
+        } else {
+            emptyView.isHidden = true
+            tableView.isHidden = false
+        }
     }
     
 

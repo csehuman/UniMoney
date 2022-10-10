@@ -41,7 +41,7 @@ class MoneyComposeViewController: UIViewController {
     let datePicker = UIDatePicker()
     
     // Data (Realm) related
-    let realm = try! Realm()
+    let realm = DataPopulation.shared.realm
     
     var categories: Results<Category>?
     var paymentMethods: Results<PaymentMethod>?
@@ -90,7 +90,7 @@ class MoneyComposeViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.presentationController?.delegate = self
-        navigationController?.navigationBar.isHidden = false
+        navigationController?.navigationBar.alpha = 1.0
     }
     
     @IBAction func moneyValueEditingChanged(_ sender: UITextField) {
@@ -135,8 +135,7 @@ class MoneyComposeViewController: UIViewController {
     
     @objc func categoryEditButtonTapped(_ sender: UIButton) {
         guard let vc = storyboard?.instantiateViewController(withIdentifier: "CategoryEditViewController") as? CategoryEditViewController else { return }
-        // 내비게이션 설정
-        vc.navigationController?.navigationBar.isHidden = true
+        vc.type = myType
         
         navigationController?.pushViewController(vc, animated: true)
     }
