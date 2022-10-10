@@ -9,6 +9,7 @@ import UIKit
 import RealmSwift
 
 class MoneyComposeViewController: UIViewController {
+    // UI Related
     @IBOutlet weak var moneyValueTextField: UITextField!
     @IBOutlet weak var moneyValueWonLabel: UILabel!
     @IBOutlet weak var moneyValueWonLabelLeadingConstraint: NSLayoutConstraint!
@@ -34,8 +35,12 @@ class MoneyComposeViewController: UIViewController {
     
     @IBOutlet weak var moneyDateTextField: UITextField!
     
+    let inputAccessoryViewFont = UIFont.systemFont(ofSize: 14)
+    let spaceButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: nil, action: nil)
+    
     let datePicker = UIDatePicker()
     
+    // Data (Realm) related
     let realm = try! Realm()
     
     var categories: Results<Category>?
@@ -53,103 +58,12 @@ class MoneyComposeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // MoneyValueTextField
-        let myView = UIView(frame: CGRect(x: 0.0, y: 0.0, width: UIScreen.main.bounds.width, height: 50))
-        let okButton = UIButton()
-        
-        myView.addSubview(okButton)
-        
-        okButton.backgroundColor = .systemPurple
-        okButton.setTitle("확인", for: .normal)
-        okButton.setTitleColor(.white, for: .normal)
-        
-        okButton.translatesAutoresizingMaskIntoConstraints = false
-        okButton.topAnchor.constraint(equalTo: myView.topAnchor).isActive = true
-        okButton.bottomAnchor.constraint(equalTo: myView.bottomAnchor).isActive = true
-        okButton.leadingAnchor.constraint(equalTo: myView.leadingAnchor).isActive = true
-        okButton.trailingAnchor.constraint(equalTo: myView.trailingAnchor).isActive = true
-        
-        okButton.addTarget(self, action: #selector(valueOkButtonTapped), for: .touchUpInside)
-        
-        moneyValueTextField.inputAccessoryView = myView
-        
-        moneyValueTextField.delegate = self
-        
-        // MoneyType
-        moneyTypeSpentButton.layer.borderColor = UIColor.systemRed.cgColor
-        moneyTypeSpentButton.layer.borderWidth = 0.5
-        moneyTypeSpentButton.layer.cornerRadius = 5
-        
-        moneyTypeEarnedButton.setTitleColor(.systemGray2, for: .normal)
-        moneyTypeEarnedButton.layer.borderColor = UIColor.systemGray2.cgColor
-        moneyTypeEarnedButton.layer.borderWidth = 0.5
-        moneyTypeEarnedButton.layer.cornerRadius = 5
-        
-        // MoneyContentTextField
-        moneyContentTextField.delegate = self
-        
-        // MoneyCategoryTextField
-        moneyCategoryTextField.inputView = categoryView
-        moneyCategoryTextField.delegate = self
-        
-        categoryCollectionView.contentInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
-        categoryCollectionView.dataSource = self
-        categoryCollectionView.delegate = self
-        categoryCollectionView.collectionViewLayout = UICollectionViewFlowLayout()
-        
-        let font = UIFont.systemFont(ofSize: 14)
-        
-        let categoryToolBar = UIToolbar()
-        categoryToolBar.sizeToFit()
-        let categoryInfoButton = UIBarButtonItem(title: "카테고리", style: .plain, target: self, action: nil)
-        categoryInfoButton.tintColor = .systemGray2
-        categoryInfoButton.setTitleTextAttributes([NSAttributedString.Key.font: font], for: .normal)
-        let spaceButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: nil, action: nil)
-        let categoryEditButton = UIBarButtonItem(title: "편집", style: .plain, target: self, action: #selector(categoryEditButtonTapped))
-        categoryEditButton.tintColor = .black
-        categoryEditButton.setTitleTextAttributes([NSAttributedString.Key.font: font], for: .normal)
-        categoryToolBar.setItems([categoryInfoButton, spaceButton, categoryEditButton], animated: false)
-        moneyCategoryTextField.inputAccessoryView = categoryToolBar
-        
-        // MoneyPaymentMethodTextField
-        moneyPaymentMethodTextField.inputView = paymentMethodView
-        moneyPaymentMethodTextField.delegate = self
-        
-        paymentMethodTableView.dataSource = self
-        paymentMethodTableView.delegate = self
-        
-        let pmToolBar = UIToolbar()
-        pmToolBar.sizeToFit()
-        let pmInfoButton = UIBarButtonItem(title: "결제수단", style: .plain, target: self, action: nil)
-        pmInfoButton.setTitleTextAttributes([NSAttributedString.Key.font: font], for: .normal)
-        pmInfoButton.tintColor = .systemGray2
-        pmToolBar.setItems([pmInfoButton], animated: false)
-        moneyPaymentMethodTextField.inputAccessoryView = pmToolBar
-        
-        // MoneyDateTextField
-        datePicker.datePickerMode = .dateAndTime
-        datePicker.date = Date()
-        datePicker.locale = Locale(identifier: "ko_KR")
-        datePicker.preferredDatePickerStyle = .wheels
-        // datePicker.addTarget(self, action: <#T##Selector#>, for: <#T##UIControl.Event#>)
-        
-        let toolBar = UIToolbar()
-        toolBar.sizeToFit()
-        let infoButton = UIBarButtonItem(title: "날짜", style: .plain, target: self, action: nil)
-        infoButton.tintColor = .systemGray2
-        infoButton.setTitleTextAttributes([NSAttributedString.Key.font: font], for: .normal)
-        let doneButton = UIBarButtonItem(title: "완료", style: .plain, target: self, action: #selector(dateDoneButtonTapped))
-        doneButton.tintColor = .systemPurple
-        doneButton.setTitleTextAttributes([NSAttributedString.Key.font: font], for: .normal)
-        toolBar.setItems([infoButton, spaceButton, doneButton], animated: false)
-        
-        moneyDateTextField.text = datePicker.date.dateStringWithTimeAmPm
-        moneyDateTextField.inputAccessoryView = toolBar
-        moneyDateTextField.inputView = datePicker
-        moneyDateTextField.delegate = self
-        
-//        dateTextField.text = diaryDate?.longDateString
-//        dateTextField.delegate = self
+        configureMoneyValueTextField()
+        configureMoneyTypeButton()
+        configureMoneyContentTextField()
+        configureMoneyCategoryTextField()
+        configureMoneyPaymentMethodTextField()
+        configureMoneyDateTextField()
         
         saveButton.layer.cornerRadius = 10
         
@@ -162,34 +76,11 @@ class MoneyComposeViewController: UIViewController {
         paymentMethods = realm.objects(PaymentMethod.self).sorted(byKeyPath: "order", ascending: true)
         
         if let moneyRecordToEdit = moneyRecordToEdit {
-            myValue = moneyRecordToEdit.value
-            myType = moneyRecordToEdit.type
-            myContent = moneyRecordToEdit.content
-            myCategory = moneyRecordToEdit.category
-            myPaymentMethod = moneyRecordToEdit.paymentMethod
-            myDate = moneyRecordToEdit.date
+            guard let category = moneyRecordToEdit.category, let paymentMethod = moneyRecordToEdit.paymentMethod else { return }
             
-            moneyValueTextField.text = "\(moneyRecordToEdit.value)"
-            moneyRecordToEdit.type == "지출" ? moneyTypeSpentButtonTapped(nil) : moneyTypeEarnedButtonTapped(nil)
-            moneyContentTextField.text = moneyRecordToEdit.content
-            moneyCategoryTextField.text = moneyRecordToEdit.category?.name
-            moneyPaymentMethodTextField.text = moneyRecordToEdit.paymentMethod?.name
-            moneyDateTextField.text = moneyRecordToEdit.date.dateStringWithTimeAmPm
+            changeAndSetMyValue(value: moneyRecordToEdit.value, type: moneyRecordToEdit.type, content: moneyRecordToEdit.content, category: category, paymentMethod: paymentMethod, date: moneyRecordToEdit.date)
             
-            guard let number = moneyValueTextField.text?.textToNumber, let finalText = number.numberToText else {
-                moneyValueWonLabelLeadingConstraint.constant = 25
-                return
-            }
-            
-            moneyValueTextField.text = finalText
-            
-            let font = moneyValueTextField.font ?? UIFont.systemFont(ofSize: 45, weight: .semibold)
-            
-            let dict = [NSAttributedString.Key.font: font]
-            
-            let width = finalText.size(withAttributes: dict).width
-
-            moneyValueWonLabelLeadingConstraint.constant = width + 25
+            adjustMoneyValueConstraint(moneyValueTextField)
         } else {
             moneyValueTextField.becomeFirstResponder()
         }
@@ -203,20 +94,7 @@ class MoneyComposeViewController: UIViewController {
     }
     
     @IBAction func moneyValueEditingChanged(_ sender: UITextField) {
-        guard let number = sender.text?.textToNumber, let finalText = number.numberToText else {
-            moneyValueWonLabelLeadingConstraint.constant = 25
-            return
-        }
-        
-        sender.text = finalText
-        
-        let font = sender.font ?? UIFont.systemFont(ofSize: 45, weight: .semibold)
-        
-        let dict = [NSAttributedString.Key.font: font]
-        
-        let width = finalText.size(withAttributes: dict).width
-
-        moneyValueWonLabelLeadingConstraint.constant = width + 25
+        adjustMoneyValueConstraint(sender)
     }
     
     @IBAction func moneyTypeSpentButtonTapped(_ sender: UIButton?) {
@@ -265,26 +143,7 @@ class MoneyComposeViewController: UIViewController {
     
     @IBAction func saveButtonTapped(_ sender: UIButton) {
         guard let myValue = myValue, let myContent = myContent, let myCategory = myCategory, let myPaymentMethod = myPaymentMethod, let myDate = myDate else {
-            var alertString = ""
-            
-            if myValue == nil {
-                alertString = "금액을 입력해주세요."
-            } else if myContent == nil {
-                alertString = "내용을 입력해주세요."
-            } else if myCategory == nil {
-                alertString = "카테고리를 선택해주세요."
-            } else if myPaymentMethod == nil {
-                alertString = "결제수단을 선택해주세요."
-            }
-            
-            let alert = UIAlertController(title: alertString, message: nil, preferredStyle: .alert)
-            let okAction = UIAlertAction(title: "확인", style: .default)
-            alert.addAction(okAction)
-            
-            if alertString.count > 0 {
-                present(alert, animated: true)
-            }
-            
+            showAlertIfEmpty(value: myValue, content: myContent, category: myCategory, paymentMethod: myPaymentMethod)
             return
         }
         
@@ -309,6 +168,44 @@ class MoneyComposeViewController: UIViewController {
     
     @objc func touch() {
         self.view.endEditing(true)
+    }
+    
+    private func changeAndSetMyValue(value: Int, type: String, content: String, category: Category, paymentMethod: PaymentMethod, date: Date) {
+        myValue = value
+        myType = type
+        myContent = content
+        myCategory = category
+        myPaymentMethod = paymentMethod
+        myDate = date
+        
+        moneyValueTextField.text = "\(value)"
+        type == "지출" ? moneyTypeSpentButtonTapped(nil) : moneyTypeEarnedButtonTapped(nil)
+        moneyContentTextField.text = content
+        moneyCategoryTextField.text = category.name
+        moneyPaymentMethodTextField.text = paymentMethod.name
+        moneyDateTextField.text = date.dateStringWithTimeAmPm
+    }
+    
+    private func showAlertIfEmpty(value: Int?, content: String?, category: Category?, paymentMethod: PaymentMethod?) {
+        var alertString = ""
+        
+        if value == nil {
+            alertString = "금액을 입력해주세요."
+        } else if content == nil {
+            alertString = "내용을 입력해주세요."
+        } else if category == nil {
+            alertString = "카테고리를 선택해주세요."
+        } else if paymentMethod == nil {
+            alertString = "결제수단을 선택해주세요."
+        }
+        
+        let alert = UIAlertController(title: alertString, message: nil, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "확인", style: .default)
+        alert.addAction(okAction)
+        
+        if alertString.count > 0 {
+            present(alert, animated: true)
+        }
     }
 }
 
@@ -449,6 +346,7 @@ extension MoneyComposeViewController: UITableViewDataSource, UITableViewDelegate
     }
 }
 
+// Modal 당길 시, 저장 팝업 뜨게하기
 extension MoneyComposeViewController: UIAdaptivePresentationControllerDelegate {
     func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
         let alert = UIAlertController(title: "알림", message: "추가한 내용을 저장할까요?", preferredStyle: .alert)
@@ -466,5 +364,127 @@ extension MoneyComposeViewController: UIAdaptivePresentationControllerDelegate {
         alert.addAction(cancelAction)
         
         present(alert, animated: true)
+    }
+}
+
+// UI Configuring 코드
+extension MoneyComposeViewController {
+    private func configureMoneyValueTextField() {
+        let myView = UIView(frame: CGRect(x: 0.0, y: 0.0, width: UIScreen.main.bounds.width, height: 50))
+        let okButton = UIButton()
+        
+        myView.addSubview(okButton)
+        
+        okButton.backgroundColor = .systemPurple
+        okButton.setTitle("확인", for: .normal)
+        okButton.setTitleColor(.white, for: .normal)
+        
+        okButton.translatesAutoresizingMaskIntoConstraints = false
+        okButton.topAnchor.constraint(equalTo: myView.topAnchor).isActive = true
+        okButton.bottomAnchor.constraint(equalTo: myView.bottomAnchor).isActive = true
+        okButton.leadingAnchor.constraint(equalTo: myView.leadingAnchor).isActive = true
+        okButton.trailingAnchor.constraint(equalTo: myView.trailingAnchor).isActive = true
+        
+        okButton.addTarget(self, action: #selector(valueOkButtonTapped), for: .touchUpInside)
+        
+        moneyValueTextField.inputAccessoryView = myView
+        
+        moneyValueTextField.delegate = self
+    }
+    
+    private func configureMoneyTypeButton() {
+        // MoneyType
+        moneyTypeSpentButton.layer.borderColor = UIColor.systemRed.cgColor
+        moneyTypeSpentButton.layer.borderWidth = 0.5
+        moneyTypeSpentButton.layer.cornerRadius = 5
+        
+        moneyTypeEarnedButton.setTitleColor(.systemGray2, for: .normal)
+        moneyTypeEarnedButton.layer.borderColor = UIColor.systemGray2.cgColor
+        moneyTypeEarnedButton.layer.borderWidth = 0.5
+        moneyTypeEarnedButton.layer.cornerRadius = 5
+    }
+    
+    private func configureMoneyContentTextField() {
+        // MoneyContentTextField
+        moneyContentTextField.delegate = self
+    }
+    
+    private func configureMoneyCategoryTextField() {
+        // MoneyCategoryTextField
+        moneyCategoryTextField.inputView = categoryView
+        moneyCategoryTextField.delegate = self
+        
+        categoryCollectionView.contentInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        categoryCollectionView.dataSource = self
+        categoryCollectionView.delegate = self
+        categoryCollectionView.collectionViewLayout = UICollectionViewFlowLayout()
+        
+        let categoryToolBar = UIToolbar()
+        categoryToolBar.sizeToFit()
+        let categoryInfoButton = UIBarButtonItem(title: "카테고리", style: .plain, target: self, action: nil)
+        categoryInfoButton.tintColor = .systemGray2
+        categoryInfoButton.setTitleTextAttributes([NSAttributedString.Key.font: inputAccessoryViewFont], for: .normal)
+        let categoryEditButton = UIBarButtonItem(title: "편집", style: .plain, target: self, action: #selector(categoryEditButtonTapped))
+        categoryEditButton.tintColor = .black
+        categoryEditButton.setTitleTextAttributes([NSAttributedString.Key.font: inputAccessoryViewFont], for: .normal)
+        categoryToolBar.setItems([categoryInfoButton, spaceButton, categoryEditButton], animated: false)
+        moneyCategoryTextField.inputAccessoryView = categoryToolBar
+    }
+    
+    private func configureMoneyPaymentMethodTextField() {
+        // MoneyPaymentMethodTextField
+        moneyPaymentMethodTextField.inputView = paymentMethodView
+        moneyPaymentMethodTextField.delegate = self
+        
+        paymentMethodTableView.dataSource = self
+        paymentMethodTableView.delegate = self
+        
+        let pmToolBar = UIToolbar()
+        pmToolBar.sizeToFit()
+        let pmInfoButton = UIBarButtonItem(title: "결제수단", style: .plain, target: self, action: nil)
+        pmInfoButton.setTitleTextAttributes([NSAttributedString.Key.font: inputAccessoryViewFont], for: .normal)
+        pmInfoButton.tintColor = .systemGray2
+        pmToolBar.setItems([pmInfoButton], animated: false)
+        moneyPaymentMethodTextField.inputAccessoryView = pmToolBar
+    }
+    
+    private func configureMoneyDateTextField() {
+        // MoneyDateTextField
+        datePicker.datePickerMode = .dateAndTime
+        datePicker.date = Date()
+        datePicker.locale = Locale(identifier: "ko_KR")
+        datePicker.preferredDatePickerStyle = .wheels
+        
+        let toolBar = UIToolbar()
+        toolBar.sizeToFit()
+        let infoButton = UIBarButtonItem(title: "날짜", style: .plain, target: self, action: nil)
+        infoButton.tintColor = .systemGray2
+        infoButton.setTitleTextAttributes([NSAttributedString.Key.font: inputAccessoryViewFont], for: .normal)
+        let doneButton = UIBarButtonItem(title: "완료", style: .plain, target: self, action: #selector(dateDoneButtonTapped))
+        doneButton.tintColor = .systemPurple
+        doneButton.setTitleTextAttributes([NSAttributedString.Key.font: inputAccessoryViewFont], for: .normal)
+        toolBar.setItems([infoButton, spaceButton, doneButton], animated: false)
+        
+        moneyDateTextField.text = datePicker.date.dateStringWithTimeAmPm
+        moneyDateTextField.inputAccessoryView = toolBar
+        moneyDateTextField.inputView = datePicker
+        moneyDateTextField.delegate = self
+    }
+    
+    private func adjustMoneyValueConstraint(_ sender: UITextField) {
+        guard let number = sender.text?.textToNumber, let finalText = number.numberToText else {
+            moneyValueWonLabelLeadingConstraint.constant = 25
+            return
+        }
+        
+        sender.text = finalText
+        
+        let font = sender.font ?? UIFont.systemFont(ofSize: 45, weight: .semibold)
+        
+        let dict = [NSAttributedString.Key.font: font]
+        
+        let width = finalText.size(withAttributes: dict).width
+
+        moneyValueWonLabelLeadingConstraint.constant = width + 25
     }
 }
