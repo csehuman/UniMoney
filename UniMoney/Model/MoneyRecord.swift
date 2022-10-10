@@ -8,6 +8,9 @@
 import Foundation
 import RealmSwift
 
+let categoryNumberKey = "categoryNumberKey"
+let paymentMethodNumberKey = "paymentMethodNumberKey"
+
 class MoneyRecord: Object {
     @Persisted(primaryKey: true) var id: String = UUID().uuidString
     @Persisted var value: Int
@@ -33,16 +36,18 @@ class Category: Object {
     @Persisted var type: String
     @Persisted var imageName: String
     @Persisted var order: Int?
-    
-    static var count: Int = 0
-    
+
     convenience init(name: String, type: String, imageName: String) {
         self.init()
         self.name = name
         self.type = type
         self.imageName = imageName
-        self.order = Category.count + 1
-        Category.count += 1
+        
+        let categoryCount = UserDefaults.standard.integer(forKey: categoryNumberKey)
+        
+        self.order = categoryCount + 1
+        
+        UserDefaults.standard.set(self.order, forKey: categoryNumberKey)
     }
 }
 
@@ -50,12 +55,14 @@ class PaymentMethod: Object {
     @Persisted var name: String
     @Persisted var order: Int?
     
-    static var count: Int = 0
-    
     convenience init(name: String) {
         self.init()
         self.name = name
-        self.order = PaymentMethod.count + 1
-        PaymentMethod.count += 1
+        
+        let paymentMethodCount = UserDefaults.standard.integer(forKey: paymentMethodNumberKey)
+        
+        self.order = paymentMethodCount + 1
+        
+        UserDefaults.standard.set(self.order, forKey: paymentMethodNumberKey)
     }
 }
