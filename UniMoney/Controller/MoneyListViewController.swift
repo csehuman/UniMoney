@@ -15,8 +15,6 @@ enum moneyDateMode {
 }
 
 class MoneyListViewController: UIViewController {
-
-    
     @IBOutlet weak var dateLabelBarButtonItem: UIBarButtonItem!
     
     @IBOutlet weak var spendingView: UIView!
@@ -31,6 +29,9 @@ class MoneyListViewController: UIViewController {
     
     @IBOutlet weak var emptyView: UIView!
     @IBOutlet weak var tableView: UITableView!
+    
+    @IBOutlet weak var totalRecordLabel: NSLayoutConstraint!
+    @IBOutlet weak var filterButton: UIButton!
     
     var currentDateMode: moneyDateMode = moneyDateMode.day
     

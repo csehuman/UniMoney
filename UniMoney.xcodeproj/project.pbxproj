@@ -27,6 +27,9 @@
 		DA84CD5728F2AEA700354CC4 /* MoneyRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA84CD5628F2AEA700354CC4 /* MoneyRecord.swift */; };
 		DA84CD5928F2B69F00354CC4 /* DataPopulation+InitialLaunch.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA84CD5828F2B69F00354CC4 /* DataPopulation+InitialLaunch.swift */; };
 		DA84CD5B28F3C77700354CC4 /* CategoryAddViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA84CD5A28F3C77700354CC4 /* CategoryAddViewController.swift */; };
+		DAA7AF0128F53E7000AFBE77 /* FilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA7AF0028F53E7000AFBE77 /* FilterViewController.swift */; };
+		DAA7AF0328F5430C00AFBE77 /* FilterSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA7AF0228F5430C00AFBE77 /* FilterSelectionViewController.swift */; };
+		DAA7AF0528F5452200AFBE77 /* FilterSelectionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA7AF0428F5452200AFBE77 /* FilterSelectionTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -54,6 +57,9 @@
 		DA84CD5628F2AEA700354CC4 /* MoneyRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoneyRecord.swift; sourceTree = "<group>"; };
 		DA84CD5828F2B69F00354CC4 /* DataPopulation+InitialLaunch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataPopulation+InitialLaunch.swift"; sourceTree = "<group>"; };
 		DA84CD5A28F3C77700354CC4 /* CategoryAddViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryAddViewController.swift; sourceTree = "<group>"; };
+		DAA7AF0028F53E7000AFBE77 /* FilterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterViewController.swift; sourceTree = "<group>"; };
+		DAA7AF0228F5430C00AFBE77 /* FilterSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterSelectionViewController.swift; sourceTree = "<group>"; };
+		DAA7AF0428F5452200AFBE77 /* FilterSelectionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterSelectionTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -147,6 +153,8 @@
 				DA13192028EE91AD0055B3D8 /* MoneyComposeViewController.swift */,
 				DA84CD5228F04DCF00354CC4 /* CategoryEditViewController.swift */,
 				DA84CD5A28F3C77700354CC4 /* CategoryAddViewController.swift */,
+				DAA7AF0028F53E7000AFBE77 /* FilterViewController.swift */,
+				DAA7AF0228F5430C00AFBE77 /* FilterSelectionViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -166,6 +174,7 @@
 				DA13192428EEC0120055B3D8 /* MoneyTableViewCell.swift */,
 				DA13192528EEC0120055B3D8 /* MoneyTableViewCell.xib */,
 				DA84CD5028EFFC8200354CC4 /* CategoryCollectionViewCell.swift */,
+				DAA7AF0428F5452200AFBE77 /* FilterSelectionTableViewCell.swift */,
 			);
 			path = Cell;
 			sourceTree = "<group>";
@@ -296,7 +305,10 @@
 				DA13190228EE87450055B3D8 /* AppDelegate.swift in Sources */,
 				DA84CD5128EFFC8200354CC4 /* CategoryCollectionViewCell.swift in Sources */,
 				DA13191928EE90770055B3D8 /* MoneyTabBarController.swift in Sources */,
+				DAA7AF0128F53E7000AFBE77 /* FilterViewController.swift in Sources */,
 				DA13192928EFBEE20055B3D8 /* NumberFormatter.swift in Sources */,
+				DAA7AF0528F5452200AFBE77 /* FilterSelectionTableViewCell.swift in Sources */,
+				DAA7AF0328F5430C00AFBE77 /* FilterSelectionViewController.swift in Sources */,
 				DA84CD5928F2B69F00354CC4 /* DataPopulation+InitialLaunch.swift in Sources */,
 				DA84CD5728F2AEA700354CC4 /* MoneyRecord.swift in Sources */,
 				DA84CD5328F04DCF00354CC4 /* CategoryEditViewController.swift in Sources */,
