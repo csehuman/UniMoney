@@ -43,9 +43,15 @@
                                     <navigationItem title="필터" id="KyM-g8-zLJ">
                                         <barButtonItem key="leftBarButtonItem" title="닫기" id="RYc-7a-rW6">
                                             <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <connections>
+                                                <action selector="closeButtonTapped:" destination="mxr-d0-Y6h" id="qK5-qQ-Cj9"/>
+                                            </connections>
                                         </barButtonItem>
                                         <barButtonItem key="rightBarButtonItem" title="적용" id="gJG-tk-P75">
                                             <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <connections>
+                                                <action selector="filterApplyButtonTapped:" destination="mxr-d0-Y6h" id="0KU-wy-TZ7"/>
+                                            </connections>
                                         </barButtonItem>
                                     </navigationItem>
                                 </items>
@@ -339,11 +345,73 @@
                                     </label>
                                 </subviews>
                             </stackView>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="RLc-po-GB9">
+                                <rect key="frame" x="0.0" y="266" width="428" height="577"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <view key="tableHeaderView" contentMode="scaleToFill" id="pVe-q6-sKI">
+                                    <rect key="frame" x="0.0" y="0.0" width="428" height="35"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="전체 내역 (5건)" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vhw-SO-e6N">
+                                            <rect key="frame" x="15" y="-3" width="81.333333333333329" height="28"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                            <color key="textColor" systemColor="systemGray2Color"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pl3-RR-9xN">
+                                            <rect key="frame" x="383" y="-3" width="30" height="28"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                            <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                            <state key="normal" title="필터">
+                                                <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            </state>
+                                            <connections>
+                                                <segue destination="mxr-d0-Y6h" kind="presentation" modalPresentationStyle="fullScreen" id="e1S-Hz-QYC"/>
+                                            </connections>
+                                        </button>
+                                        <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aUS-m1-yP7">
+                                            <rect key="frame" x="366" y="6" width="12" height="10"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="12" id="N8t-dx-3zf"/>
+                                                <constraint firstAttribute="height" constant="10" id="hTY-q1-Av6"/>
+                                            </constraints>
+                                            <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                            <state key="normal" image="xmark" catalog="system">
+                                                <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            </state>
+                                            <connections>
+                                                <action selector="filterCancelButtonTapped:" destination="BJg-LH-w5N" eventType="touchUpInside" id="jWm-5t-klm"/>
+                                            </connections>
+                                        </button>
+                                    </subviews>
+                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                    <constraints>
+                                        <constraint firstItem="pl3-RR-9xN" firstAttribute="leading" secondItem="aUS-m1-yP7" secondAttribute="trailing" constant="5" id="3I8-VN-Jie"/>
+                                        <constraint firstAttribute="bottom" secondItem="vhw-SO-e6N" secondAttribute="bottom" constant="10" id="KeC-Mm-yrm"/>
+                                        <constraint firstAttribute="bottom" secondItem="pl3-RR-9xN" secondAttribute="bottom" constant="10" id="eVu-Aa-ken"/>
+                                        <constraint firstAttribute="trailing" secondItem="pl3-RR-9xN" secondAttribute="trailing" constant="15" id="mbA-7s-U07"/>
+                                        <constraint firstItem="vhw-SO-e6N" firstAttribute="leading" secondItem="pVe-q6-sKI" secondAttribute="leading" constant="15" id="oSZ-gJ-7yg"/>
+                                        <constraint firstItem="aUS-m1-yP7" firstAttribute="centerY" secondItem="pl3-RR-9xN" secondAttribute="centerY" id="wYh-9T-dul"/>
+                                        <constraint firstItem="pl3-RR-9xN" firstAttribute="centerY" secondItem="vhw-SO-e6N" secondAttribute="centerY" id="zfV-l9-vsr"/>
+                                    </constraints>
+                                </view>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" id="qzd-5G-VnL" customClass="MoneyTableViewCell" customModule="UniMoney" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="85" width="428" height="43.666667938232422"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="qzd-5G-VnL" id="sWY-iQ-Z5v">
+                                            <rect key="frame" x="0.0" y="0.0" width="428" height="43.666667938232422"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FMy-ih-9mO">
-                                <rect key="frame" x="0.0" y="286" width="428" height="557"/>
+                                <rect key="frame" x="0.0" y="306" width="428" height="537"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="22" translatesAutoresizingMaskIntoConstraints="NO" id="8dL-wz-5JN">
-                                        <rect key="frame" x="141.66666666666666" y="169.66666666666669" width="144.99999999999997" height="117.66666666666669"/>
+                                        <rect key="frame" x="141.66666666666666" y="159.66666666666669" width="144.99999999999997" height="117.66666666666669"/>
                                         <subviews>
                                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="eject" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="4jS-cL-Z5q">
                                                 <rect key="frame" x="45" y="1.3333333333333321" width="55" height="52.333333333333343"/>
@@ -370,65 +438,6 @@
                                     <constraint firstItem="8dL-wz-5JN" firstAttribute="centerY" secondItem="FMy-ih-9mO" secondAttribute="centerY" constant="-50" id="W8c-qC-WaF"/>
                                 </constraints>
                             </view>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="RLc-po-GB9">
-                                <rect key="frame" x="0.0" y="266" width="428" height="577"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                <view key="tableHeaderView" contentMode="scaleToFill" id="pVe-q6-sKI">
-                                    <rect key="frame" x="0.0" y="0.0" width="428" height="35"/>
-                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                    <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="전체 내역 (5건)" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vhw-SO-e6N">
-                                            <rect key="frame" x="15" y="-3" width="81.333333333333329" height="28"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                            <color key="textColor" systemColor="systemGray2Color"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pl3-RR-9xN">
-                                            <rect key="frame" x="383" y="-3" width="30" height="28"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                            <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                            <state key="normal" title="필터">
-                                                <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                            </state>
-                                            <connections>
-                                                <segue destination="mxr-d0-Y6h" kind="presentation" modalPresentationStyle="fullScreen" id="e1S-Hz-QYC"/>
-                                            </connections>
-                                        </button>
-                                        <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aUS-m1-yP7">
-                                            <rect key="frame" x="371" y="6" width="12" height="10"/>
-                                            <constraints>
-                                                <constraint firstAttribute="width" constant="12" id="N8t-dx-3zf"/>
-                                                <constraint firstAttribute="height" constant="10" id="hTY-q1-Av6"/>
-                                            </constraints>
-                                            <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                            <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                            <state key="normal" image="xmark" catalog="system">
-                                                <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                            </state>
-                                        </button>
-                                    </subviews>
-                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                    <constraints>
-                                        <constraint firstItem="pl3-RR-9xN" firstAttribute="leading" secondItem="aUS-m1-yP7" secondAttribute="trailing" id="3I8-VN-Jie"/>
-                                        <constraint firstAttribute="bottom" secondItem="vhw-SO-e6N" secondAttribute="bottom" constant="10" id="KeC-Mm-yrm"/>
-                                        <constraint firstAttribute="bottom" secondItem="pl3-RR-9xN" secondAttribute="bottom" constant="10" id="eVu-Aa-ken"/>
-                                        <constraint firstAttribute="trailing" secondItem="pl3-RR-9xN" secondAttribute="trailing" constant="15" id="mbA-7s-U07"/>
-                                        <constraint firstItem="vhw-SO-e6N" firstAttribute="leading" secondItem="pVe-q6-sKI" secondAttribute="leading" constant="15" id="oSZ-gJ-7yg"/>
-                                        <constraint firstItem="aUS-m1-yP7" firstAttribute="centerY" secondItem="pl3-RR-9xN" secondAttribute="centerY" id="wYh-9T-dul"/>
-                                        <constraint firstItem="pl3-RR-9xN" firstAttribute="centerY" secondItem="vhw-SO-e6N" secondAttribute="centerY" id="zfV-l9-vsr"/>
-                                    </constraints>
-                                </view>
-                                <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" id="qzd-5G-VnL" customClass="MoneyTableViewCell" customModule="UniMoney" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="85" width="428" height="43.666667938232422"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="qzd-5G-VnL" id="sWY-iQ-Z5v">
-                                            <rect key="frame" x="0.0" y="0.0" width="428" height="43.666667938232422"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
-                                </prototypes>
-                            </tableView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XIz-nQ-Y2J">
                                 <rect key="frame" x="139" y="773" width="150" height="45"/>
                                 <color key="backgroundColor" systemColor="systemPurpleColor"/>
@@ -461,7 +470,7 @@
                             <constraint firstItem="1dl-XJ-Umi" firstAttribute="top" secondItem="F56-SJ-BaY" secondAttribute="bottom" constant="13" id="Rfb-KP-aWH"/>
                             <constraint firstItem="F56-SJ-BaY" firstAttribute="width" secondItem="gGJ-KD-fjS" secondAttribute="width" multiplier="0.4" id="TRe-yF-ZqB"/>
                             <constraint firstItem="H9C-0a-mn7" firstAttribute="trailing" secondItem="RLc-po-GB9" secondAttribute="trailing" id="YKW-Wl-CDi"/>
-                            <constraint firstItem="FMy-ih-9mO" firstAttribute="top" secondItem="1dl-XJ-Umi" secondAttribute="bottom" constant="50" id="Yoh-E7-44f"/>
+                            <constraint firstItem="FMy-ih-9mO" firstAttribute="top" secondItem="RLc-po-GB9" secondAttribute="top" constant="40" id="Yoh-E7-44f"/>
                             <constraint firstItem="RLc-po-GB9" firstAttribute="top" secondItem="1dl-XJ-Umi" secondAttribute="bottom" constant="30" id="hE5-k3-R0l"/>
                             <constraint firstItem="XIz-nQ-Y2J" firstAttribute="width" secondItem="gGJ-KD-fjS" secondAttribute="width" multiplier="0.35" id="kiG-kJ-yKh"/>
                             <constraint firstItem="H9C-0a-mn7" firstAttribute="trailing" secondItem="m5f-4a-Njv" secondAttribute="trailing" constant="20" id="qdO-7Z-HDd"/>
@@ -508,13 +517,16 @@
                         <outlet property="dateLabelBarButtonItem" destination="N9Z-Oa-fHs" id="IIt-kd-W1u"/>
                         <outlet property="earnedMoneyLabel" destination="QFs-Yl-L0H" id="XCI-SS-fQS"/>
                         <outlet property="earningView" destination="m5f-4a-Njv" id="Gso-kA-Aqa"/>
+                        <outlet property="emptyImageView" destination="4jS-cL-Z5q" id="DBT-Af-lnq"/>
+                        <outlet property="emptyTextLabel" destination="LIu-Cj-YJn" id="Tjp-LZ-GxH"/>
                         <outlet property="emptyView" destination="FMy-ih-9mO" id="Cz6-wG-IsW"/>
                         <outlet property="filterButton" destination="pl3-RR-9xN" id="qNW-6o-Awt"/>
+                        <outlet property="filterCancelButton" destination="aUS-m1-yP7" id="d0n-LQ-opT"/>
                         <outlet property="spendingView" destination="F56-SJ-BaY" id="m0M-gQ-o3j"/>
                         <outlet property="spentMoneyLabel" destination="Nyg-US-C7q" id="Nag-Kf-gmx"/>
                         <outlet property="tableView" destination="RLc-po-GB9" id="dIL-kJ-mbA"/>
                         <outlet property="totalLabel" destination="1nk-6a-Qvr" id="jxv-nV-GKg"/>
-                        <outlet property="totalRecordLabel" destination="zfV-l9-vsr" id="Kgq-Hy-Rgy"/>
+                        <outlet property="totalRecordLabel" destination="vhw-SO-e6N" id="Xp5-2Y-1dy"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="JkV-3M-SeF" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

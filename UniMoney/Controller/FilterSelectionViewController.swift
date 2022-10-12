@@ -139,14 +139,36 @@ class FilterSelectionViewController: UIViewController {
     
     @IBAction func okButtonTapped(_ sender: Any) {
         if type == "결제수단" {
-            NotificationCenter.default.post(name: NSNotification.Name("FilterApplied"), object: ["type": type, "data": selectedPaymentMethods])
+            if selectedPaymentMethods.count == 0 {
+                let alert = UIAlertController(title: "선택된 결제수단이 없습니다.", message: "1개 이상의 결제수단을 선택하여주세요.", preferredStyle: .alert)
+                let okAction = UIAlertAction(title: "확인", style: .default, handler: nil)
+                alert.addAction(okAction)
+                present(alert, animated: true)
+            } else {
+                NotificationCenter.default.post(name: NSNotification.Name("FilterApplied"), object: ["type": type, "data": selectedPaymentMethods])
+                dismiss(animated: true)
+            }
         } else if type == "지출" {
-            NotificationCenter.default.post(name: NSNotification.Name("FilterApplied"), object: ["type": type, "data": selectedSpendingCategories])
+            if selectedSpendingCategories.count == 0 {
+                let alert = UIAlertController(title: "선택된 지출 카테고리가 없습니다.", message: "1개 이상의 카테고리를 선택하여주세요.", preferredStyle: .alert)
+                let okAction = UIAlertAction(title: "확인", style: .default, handler: nil)
+                alert.addAction(okAction)
+                present(alert, animated: true)
+            } else {
+                NotificationCenter.default.post(name: NSNotification.Name("FilterApplied"), object: ["type": type, "data": selectedSpendingCategories])
+                dismiss(animated: true)
+            }
         } else if type == "수입" {
-            NotificationCenter.default.post(name: NSNotification.Name("FilterApplied"), object: ["type": type, "data": selectedEarningCategories])
+            if selectedEarningCategories.count == 0 {
+                let alert = UIAlertController(title: "선택된 수입 카테고리가 없습니다.", message: "1개 이상의 카테고리를 선택하여주세요.", preferredStyle: .alert)
+                let okAction = UIAlertAction(title: "확인", style: .default, handler: nil)
+                alert.addAction(okAction)
+                present(alert, animated: true)
+            } else {
+                NotificationCenter.default.post(name: NSNotification.Name("FilterApplied"), object: ["type": type, "data": selectedEarningCategories])
+                dismiss(animated: true)
+            }
         }
-        
-        dismiss(animated: true)
     }
 }
 

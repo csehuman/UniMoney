@@ -38,24 +38,7 @@ class FilterViewController: UIViewController {
         earnedTextField.delegate = self
         paymentMethodTextField.delegate = self
         
-        spentTextField.setBottomBorder(color: .systemGray4)
-        earnedTextField.setBottomBorder(color: .systemGray4)
-        paymentMethodTextField.setBottomBorder(color: .systemGray4)
-        
-        spentTextField.setImage()
-        earnedTextField.setImage()
-        paymentMethodTextField.setImage()
-        
-        spentCheckBoxButton.isSelected = true
-        earnedCheckBoxButton.isSelected = true
-        
-        allSpendingCategories = realm.objects(Category.self).filter("type == %@", "지출").sorted(byKeyPath: "order", ascending: true)
-        allEarningCategories = realm.objects(Category.self).filter("type == %@", "수입").sorted(byKeyPath: "order", ascending: true)
-        allPaymentMethods = realm.objects(PaymentMethod.self).sorted(byKeyPath: "order", ascending: true)
-        
-        selectedSpendingCategories = Array(allSpendingCategories!)
-        selectedEarningCategories = Array(allEarningCategories!)
-        selectedPaymentMethods = Array(allPaymentMethods!)
+        configureInitialSettings()
         
         NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: "FilterApplied"), object: nil, queue: OperationQueue.main) { [weak self] noti in
             guard let self = self else { return }
@@ -65,29 +48,176 @@ class FilterViewController: UIViewController {
             if type == "결제수단" {
                 guard let data = dict["data"] as? [PaymentMethod] else { return }
                 self.selectedPaymentMethods = data
+                self.configureTextFieldPlaceholder(type: "결제수단")
             } else if type == "지출" {
                 guard let data = dict["data"] as? [Category] else { return }
                 self.selectedSpendingCategories = data
-                print(self.selectedSpendingCategories.count)
+                self.configureTextFieldPlaceholder(type: "지출")
             } else if type == "수입" {
                 guard let data = dict["data"] as? [Category] else { return }
                 self.selectedEarningCategories = data
+                self.configureTextFieldPlaceholder(type: "수입")
             }
         }
     }
     
     @IBAction func spentCheckBoxButtonTapped(_ sender: UIButton) {
+        let beforeSelectedState = spentCheckBoxButton.isSelected
         spentCheckBoxButton.isSelected.toggle()
+        if spentCheckBoxButton.isSelected {
+            if !beforeSelectedState {
+                selectedSpendingCategories = Array(allSpendingCategories!)
+            }
+            spentTextField.setPlaceholderColor(.black)
+            spentTextField.setBottomBorder(color: .darkGray)
+            spentTextField.setImage(color: .darkGray)
+        } else {
+            if beforeSelectedState {
+                selectedSpendingCategories = []
+                spentTextField.placeholder = "전체"
+            }
+            spentTextField.setPlaceholderColor(.lightGray)
+            spentTextField.setBottomBorder(color: .lightGray)
+            spentTextField.setImage(color: .lightGray)
+        }
     }
     
     @IBAction func earnedCheckBoxButtonTapped(_ sender: UIButton) {
+        let beforeSelectedState = earnedCheckBoxButton.isSelected
         earnedCheckBoxButton.isSelected.toggle()
+        if earnedCheckBoxButton.isSelected {
+            if !beforeSelectedState {
+                selectedEarningCategories = Array(allEarningCategories!)
+            }
+            earnedTextField.setPlaceholderColor(.black)
+            earnedTextField.setBottomBorder(color: .darkGray)
+            earnedTextField.setImage(color: .darkGray)
+        } else {
+            if beforeSelectedState {
+                selectedEarningCategories = []
+                earnedTextField.placeholder = "전체"
+            }
+            earnedTextField.setPlaceholderColor(.lightGray)
+            earnedTextField.setBottomBorder(color: .lightGray)
+            earnedTextField.setImage(color: .lightGray)
+        }
     }
     
+    @IBAction func closeButtonTapped(_ sender: UIButton) {
+        dismiss(animated: true)
+    }
+    
+    @IBAction func filterApplyButtonTapped(_ sender: UIButton) {
+        let spentChecked = spentCheckBoxButton.isSelected
+        let earnedChecked = earnedCheckBoxButton.isSelected
+        
+        if !spentChecked && !earnedChecked {
+            let alert = UIAlertController(title: "1개 이상의 카테고리를 선택해주세요.", message: nil, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "확인", style: .default))
+            present(alert, animated: true)
+        } else {
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "filterToMain"), object: [
+                "spentChecked": spentChecked,
+                "earnedChecked": earnedChecked,
+                "selectedSpendingCategories": selectedSpendingCategories,
+                "selectedEarningCategories": selectedEarningCategories,
+                "selectedPaymentMethods": selectedPaymentMethods
+            ])
+            
+            dismiss(animated: true)
+        }
+    }
+    
+    private func configureTextFieldPlaceholder(type: String) {
+        switch type {
+        case "결제수단":
+            var resultString = ""
+            if selectedPaymentMethods.count == allPaymentMethods?.count {
+                resultString = "모든 결제수단"
+            } else {
+                selectedPaymentMethods.forEach {
+                    resultString += "\($0.name), "
+                }
+                
+                resultString = String(resultString.dropLast(2))
+            }
+            paymentMethodTextField.placeholder = resultString
+        case "지출":
+            var resultString = ""
+            if selectedSpendingCategories.count == allSpendingCategories?.count {
+                resultString = "전체"
+            } else {
+                selectedSpendingCategories.forEach {
+                    resultString += "\($0.name), "
+                }
+                
+                resultString = String(resultString.dropLast(2))
+            }
+            spentTextField.placeholder = resultString
+        case "수입":
+            var resultString = ""
+            if selectedEarningCategories.count == allEarningCategories?.count {
+                resultString = "전체"
+            } else {
+                selectedEarningCategories.forEach {
+                    resultString += "\($0.name), "
+                }
+                
+                resultString = String(resultString.dropLast(2))
+            }
+            earnedTextField.placeholder = resultString
+        default:
+            break
+        }
+    }
+    
+    private func configureInitialSettings() {
+        if selectedSpendingCategories.count == 0 {
+            spentCheckBoxButton.isSelected = false
+            spentTextField.placeholder = "전체"
+            
+            spentTextField.setPlaceholderColor(.lightGray)
+            spentTextField.setBottomBorder(color: .lightGray)
+            spentTextField.setImage(color: .lightGray)
+        } else {
+            spentTextField.setPlaceholderColor(.black)
+            spentTextField.setBottomBorder(color: .darkGray)
+            spentTextField.setImage(color: .darkGray)
+            
+            spentCheckBoxButton.isSelected = true
+            
+            configureTextFieldPlaceholder(type: "지출")
+        }
+        
+        if selectedEarningCategories.count == 0 {
+            earnedCheckBoxButton.isSelected = false
+            earnedTextField.placeholder = "전체"
+            
+            earnedTextField.setPlaceholderColor(.lightGray)
+            earnedTextField.setBottomBorder(color: .lightGray)
+            earnedTextField.setImage(color: .lightGray)
+        } else {
+            earnedTextField.setPlaceholderColor(.black)
+            earnedTextField.setBottomBorder(color: .darkGray)
+            earnedTextField.setImage(color: .darkGray)
+            
+            earnedCheckBoxButton.isSelected = true
+            
+            configureTextFieldPlaceholder(type: "수입")
+        }
+
+        paymentMethodTextField.setPlaceholderColor(.black)
+        paymentMethodTextField.setBottomBorder(color: .darkGray)
+        paymentMethodTextField.setImage(color: .darkGray)
+        
+        configureTextFieldPlaceholder(type: "결제수단")
+    }
 }
 
 extension FilterViewController: UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
+        textField.endEditing(true)
+        
         guard let vc = storyboard?.instantiateViewController(withIdentifier: "FilterSelectionViewController") as? FilterSelectionViewController else { return }
         
         switch textField {
@@ -130,12 +260,21 @@ extension UITextField {
         self.layer.shadowRadius = 0.0
     }
     
-    func setImage() {
-        print("Hi")
+    func setImage(color: UIColor) {
         let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
         imageView.image = UIImage(systemName: "arrowtriangle.down.circle")
-        imageView.tintColor = .lightGray
+        imageView.tintColor = color
         self.rightView = imageView
         self.rightViewMode = .always
+    }
+    
+    func setPlaceholderColor(_ placeholderColor: UIColor) {
+        attributedPlaceholder = NSAttributedString(
+            string: self.placeholder ?? "",
+            attributes: [
+                .foregroundColor: placeholderColor,
+                .font: self.font
+            ].compactMapValues { $0 }
+        )
     }
 }

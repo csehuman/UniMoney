@@ -84,12 +84,9 @@ class MoneyComposeViewController: UIViewController {
         } else {
             moneyValueTextField.becomeFirstResponder()
         }
-        
-        isModalInPresentation = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        navigationController?.presentationController?.delegate = self
         navigationController?.navigationBar.alpha = 1.0
     }
     
@@ -344,27 +341,6 @@ extension MoneyComposeViewController: UITableViewDataSource, UITableViewDelegate
         
         moneyPaymentMethodTextField.resignFirstResponder()
         moneyDateTextField.becomeFirstResponder()
-    }
-}
-
-// Modal 당길 시, 저장 팝업 뜨게하기
-extension MoneyComposeViewController: UIAdaptivePresentationControllerDelegate {
-    func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
-        let alert = UIAlertController(title: "알림", message: "추가한 내용을 저장할까요?", preferredStyle: .alert)
-        
-        let okAction = UIAlertAction(title: "확인", style: .default) { [weak self] action in
-            // self?.save(action)
-            self?.dismiss(animated: true)
-        }
-        alert.addAction(okAction)
-        
-        let cancelAction = UIAlertAction(title: "취소", style: .cancel) { [weak self] action in
-            self?.dismiss(animated: true)
-            // self?.close(action)
-        }
-        alert.addAction(cancelAction)
-        
-        present(alert, animated: true)
     }
 }
 
