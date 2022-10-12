@@ -42,27 +42,15 @@ class FilterSelectionViewController: UIViewController {
             
             guard let isSelected = dic["isSelected"] as? Bool else { return }
             guard let selectedIndex = dic["selectedIndex"] as? Int else { return }
- 
+
             if isSelected {
                 if selectedIndex == 0 {
                     if self.type == "결제수단" {
                         self.selectedPaymentMethods = Array(self.allPaymentMethods!)
-                        (1...self.allPaymentMethods!.count).forEach {
-                            let cell = self.filterSelectionTableView.cellForRow(at: IndexPath(row: $0, section: 0)) as! FilterSelectionTableViewCell
-                            cell.filterContentButton.isSelected = true
-                        }
                     } else if self.type == "지출" {
                         self.selectedSpendingCategories = Array(self.allSpendingCategories!)
-                        (1...self.allSpendingCategories!.count).forEach {
-                            let cell = self.filterSelectionTableView.cellForRow(at: IndexPath(row: $0, section: 0)) as! FilterSelectionTableViewCell
-                            cell.filterContentButton.isSelected = true
-                        }
                     } else if self.type == "수입" {
                         self.selectedEarningCategories = Array(self.allEarningCategories!)
-                        (1...self.allEarningCategories!.count).forEach {
-                            let cell = self.filterSelectionTableView.cellForRow(at: IndexPath(row: $0, section: 0)) as! FilterSelectionTableViewCell
-                            cell.filterContentButton.isSelected = true
-                        }
                     }
                 } else {
                     if self.type == "결제수단" {
@@ -86,22 +74,10 @@ class FilterSelectionViewController: UIViewController {
                 if selectedIndex == 0 {
                     if self.type == "결제수단" {
                         self.selectedPaymentMethods = []
-                        (1...self.allPaymentMethods!.count).forEach {
-                            let cell = self.filterSelectionTableView.cellForRow(at: IndexPath(row: $0, section: 0)) as! FilterSelectionTableViewCell
-                            cell.filterContentButton.isSelected = false
-                        }
                     } else if self.type == "지출" {
                         self.selectedSpendingCategories = []
-                        (1...self.allSpendingCategories!.count).forEach {
-                            let cell = self.filterSelectionTableView.cellForRow(at: IndexPath(row: $0, section: 0)) as! FilterSelectionTableViewCell
-                            cell.filterContentButton.isSelected = false
-                        }
                     } else if self.type == "수입" {
                         self.selectedEarningCategories = []
-                        (1...self.allEarningCategories!.count).forEach {
-                            let cell = self.filterSelectionTableView.cellForRow(at: IndexPath(row: $0, section: 0)) as! FilterSelectionTableViewCell
-                            cell.filterContentButton.isSelected = false
-                        }
                     }
                 } else {
                     if self.type == "결제수단" {
@@ -117,18 +93,7 @@ class FilterSelectionViewController: UIViewController {
                 }
             }
             
-            let cell = self.filterSelectionTableView.cellForRow(at: IndexPath(row: 0, section: 0)) as! FilterSelectionTableViewCell
-            
-            switch self.type {
-            case "결제수단":
-                cell.filterContentButton.isSelected = self.selectedPaymentMethods.count == self.allPaymentMethods?.count
-            case "지출":
-                cell.filterContentButton.isSelected = self.selectedSpendingCategories.count == self.allSpendingCategories?.count
-            case "수입":
-                cell.filterContentButton.isSelected = self.selectedEarningCategories.count == self.allEarningCategories?.count
-            default:
-                break
-            }
+            self.filterSelectionTableView.reloadData()
         }
         
     }
@@ -195,6 +160,9 @@ extension FilterSelectionViewController: UITableViewDataSource, UITableViewDeleg
             cell.filterContentLabel.font = UIFont.systemFont(ofSize: 14, weight: .bold)
             cell.separatorInset.left = 0
             
+            cell.index = 0
+            
+            print("Here")
             switch type {
             case "결제수단":
                 cell.filterContentButton.isSelected = selectedPaymentMethods.count == allPaymentMethods?.count
@@ -224,6 +192,8 @@ extension FilterSelectionViewController: UITableViewDataSource, UITableViewDeleg
             }
             
             cell.index = indexPath.row
+            cell.filterContentLabel.font = UIFont.systemFont(ofSize: 14, weight: .light)
+            cell.separatorInset.left = 15
         }
         
         return cell

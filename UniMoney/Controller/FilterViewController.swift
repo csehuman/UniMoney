@@ -222,17 +222,21 @@ extension FilterViewController: UITextFieldDelegate {
         
         switch textField {
         case spentTextField:
-            vc.type = "지출"
-            vc.allSpendingCategories = allSpendingCategories
-            vc.selectedSpendingCategories = selectedSpendingCategories
-            vc.modalPresentationStyle = .fullScreen
-            present(vc, animated: true)
+            if spentCheckBoxButton.isSelected {
+                vc.type = "지출"
+                vc.allSpendingCategories = allSpendingCategories
+                vc.selectedSpendingCategories = selectedSpendingCategories
+                vc.modalPresentationStyle = .fullScreen
+                present(vc, animated: true)
+            }
         case earnedTextField:
-            vc.type = "수입"
-            vc.allEarningCategories = allEarningCategories
-            vc.selectedEarningCategories = selectedEarningCategories
-            vc.modalPresentationStyle = .fullScreen
-            present(vc, animated: true)
+            if earnedCheckBoxButton.isSelected {
+                vc.type = "수입"
+                vc.allEarningCategories = allEarningCategories
+                vc.selectedEarningCategories = selectedEarningCategories
+                vc.modalPresentationStyle = .fullScreen
+                present(vc, animated: true)
+            }
         case paymentMethodTextField:
             vc.type = "결제수단"
             vc.allPaymentMethods = allPaymentMethods

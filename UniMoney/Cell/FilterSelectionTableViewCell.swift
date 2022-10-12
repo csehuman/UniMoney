@@ -17,14 +17,19 @@ class FilterSelectionTableViewCell: UITableViewCell {
         super.awakeFromNib()
         self.selectionStyle = .none
     }
-
+    
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
     }
     
     
     @IBAction func filterContentButtonTapped(_ sender: Any) {
         filterContentButton.isSelected.toggle()
+        print(index, filterContentLabel.text)
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "buttonSelected"), object: ["selectedIndex": index, "isSelected": filterContentButton.isSelected])
     }
 }

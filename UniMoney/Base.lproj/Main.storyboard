@@ -243,6 +243,7 @@
                                                 <constraint firstItem="azY-pq-PLK" firstAttribute="top" secondItem="OD3-OM-rbw" secondAttribute="topMargin" id="v7E-bz-QQt"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <inset key="separatorInset" minX="15" minY="0.0" maxX="0.0" maxY="0.0"/>
                                         <connections>
                                             <outlet property="filterContentButton" destination="Osf-fa-pQZ" id="2th-HP-Mdm"/>
                                             <outlet property="filterContentLabel" destination="azY-pq-PLK" id="8AS-S9-ehj"/>
