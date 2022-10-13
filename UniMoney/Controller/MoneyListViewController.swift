@@ -286,7 +286,7 @@ class MoneyListViewController: UIViewController {
                 }
                 updateTableViewForMonth()
             case .day:
-                if currentDayForDay == 31 {
+                if currentDayForDay == getLastDayOfMonthComponents(forMonth: currentMonthForDay!).day! {
                     if currentMonthForDay == 12 {
                         currentMonthForDay = 1
                         currentYearForDay = currentYearForDay! + 1

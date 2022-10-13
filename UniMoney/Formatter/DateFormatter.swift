@@ -40,6 +40,11 @@ extension Date {
         return dateFormatter.string(from: self)
     }
     
+    var yearMonthDayString: String {
+        dateFormatter.dateFormat = "yyyy년 M월 d일"
+        return dateFormatter.string(from: self)
+    }
+    
     var timeString: String {
         dateFormatter.dateFormat = "HH:00"
         return dateFormatter.string(from: self)

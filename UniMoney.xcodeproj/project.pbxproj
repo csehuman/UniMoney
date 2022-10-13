@@ -30,6 +30,7 @@
 		DAA7AF0128F53E7000AFBE77 /* FilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA7AF0028F53E7000AFBE77 /* FilterViewController.swift */; };
 		DAA7AF0328F5430C00AFBE77 /* FilterSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA7AF0228F5430C00AFBE77 /* FilterSelectionViewController.swift */; };
 		DAA7AF0528F5452200AFBE77 /* FilterSelectionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA7AF0428F5452200AFBE77 /* FilterSelectionTableViewCell.swift */; };
+		DAA7AF0728F7F4E800AFBE77 /* DateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA7AF0628F7F4E800AFBE77 /* DateManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -60,6 +61,7 @@
 		DAA7AF0028F53E7000AFBE77 /* FilterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterViewController.swift; sourceTree = "<group>"; };
 		DAA7AF0228F5430C00AFBE77 /* FilterSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterSelectionViewController.swift; sourceTree = "<group>"; };
 		DAA7AF0428F5452200AFBE77 /* FilterSelectionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterSelectionTableViewCell.swift; sourceTree = "<group>"; };
+		DAA7AF0628F7F4E800AFBE77 /* DateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -164,6 +166,7 @@
 			children = (
 				DA13192828EFBEE20055B3D8 /* NumberFormatter.swift */,
 				DA84CD5428F0505F00354CC4 /* DateFormatter.swift */,
+				DAA7AF0628F7F4E800AFBE77 /* DateManager.swift */,
 			);
 			path = Formatter;
 			sourceTree = "<group>";
@@ -295,6 +298,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DAA7AF0728F7F4E800AFBE77 /* DateManager.swift in Sources */,
 				DA84CD5528F0505F00354CC4 /* DateFormatter.swift in Sources */,
 				DA13192128EE91AD0055B3D8 /* MoneyComposeViewController.swift in Sources */,
 				DA13191F28EE91500055B3D8 /* SettingTableViewController.swift in Sources */,

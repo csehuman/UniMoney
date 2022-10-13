@@ -625,27 +625,143 @@
             <objects>
                 <viewController id="aP2-qZ-IYL" customClass="MoneyAnalysisViewController" customModule="UniMoney" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="XGg-cD-nNw">
-                        <rect key="frame" x="0.0" y="0.0" width="428" height="926"/>
+                        <rect key="frame" x="0.0" y="0.0" width="428" height="1500"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rC8-za-xtz">
+                                <rect key="frame" x="0.0" y="91" width="428" height="1326"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="P0F-I0-Fto">
+                                        <rect key="frame" x="0.0" y="0.0" width="428" height="1425"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="카테고리 별 지출" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ext-ju-Dds">
+                                                <rect key="frame" x="15" y="15" width="92.333333333333329" height="17"/>
+                                                <fontDescription key="fontDescription" type="system" weight="light" pointSize="14"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="카테고리 별 수입" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="S9u-EN-t3m">
+                                                <rect key="frame" x="15" y="440" width="92.333333333333329" height="17"/>
+                                                <fontDescription key="fontDescription" type="system" weight="light" pointSize="14"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ByO-zL-bbF" customClass="PieChartView" customModule="Charts">
+                                                <rect key="frame" x="30" y="47" width="368" height="368"/>
+                                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="ByO-zL-bbF" secondAttribute="height" id="Y97-fm-mcA"/>
+                                                </constraints>
+                                            </view>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="34w-EJ-gx4" customClass="PieChartView" customModule="Charts">
+                                                <rect key="frame" x="15" y="472" width="398" height="398"/>
+                                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="34w-EJ-gx4" secondAttribute="height" id="kge-QF-znM"/>
+                                                </constraints>
+                                            </view>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="전월 비교" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ixm-F2-2NR">
+                                                <rect key="frame" x="15.000000000000004" y="895" width="52.333333333333343" height="17"/>
+                                                <fontDescription key="fontDescription" type="system" weight="light" pointSize="14"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="85x-bJ-Gbq" customClass="BarChartView" customModule="Charts">
+                                                <rect key="frame" x="15" y="927" width="398" height="398"/>
+                                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="85x-bJ-Gbq" secondAttribute="height" id="xq4-Uu-6mh"/>
+                                                </constraints>
+                                            </view>
+                                        </subviews>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                        <constraints>
+                                            <constraint firstItem="34w-EJ-gx4" firstAttribute="top" secondItem="S9u-EN-t3m" secondAttribute="bottom" constant="15" id="0tY-ob-51u"/>
+                                            <constraint firstItem="34w-EJ-gx4" firstAttribute="leading" secondItem="P0F-I0-Fto" secondAttribute="leading" constant="15" id="2Pg-li-ELC"/>
+                                            <constraint firstItem="ixm-F2-2NR" firstAttribute="top" secondItem="34w-EJ-gx4" secondAttribute="bottom" constant="25" id="3zP-Af-3ff"/>
+                                            <constraint firstItem="S9u-EN-t3m" firstAttribute="leading" secondItem="P0F-I0-Fto" secondAttribute="leading" constant="15" id="6Dm-s2-11i"/>
+                                            <constraint firstAttribute="trailing" secondItem="ByO-zL-bbF" secondAttribute="trailing" constant="30" id="6sH-Jn-3np"/>
+                                            <constraint firstItem="ixm-F2-2NR" firstAttribute="leading" secondItem="P0F-I0-Fto" secondAttribute="leading" constant="15" id="7p2-Ru-zbx"/>
+                                            <constraint firstAttribute="trailing" secondItem="34w-EJ-gx4" secondAttribute="trailing" constant="15" id="8pR-eW-EC7"/>
+                                            <constraint firstItem="Ext-ju-Dds" firstAttribute="top" secondItem="P0F-I0-Fto" secondAttribute="top" constant="15" id="FXO-jw-gMf"/>
+                                            <constraint firstItem="85x-bJ-Gbq" firstAttribute="leading" secondItem="P0F-I0-Fto" secondAttribute="leading" constant="15" id="I9k-qC-zi3"/>
+                                            <constraint firstItem="85x-bJ-Gbq" firstAttribute="top" secondItem="ixm-F2-2NR" secondAttribute="bottom" constant="15" id="Y6f-mK-wfb"/>
+                                            <constraint firstItem="ByO-zL-bbF" firstAttribute="top" secondItem="Ext-ju-Dds" secondAttribute="bottom" constant="15" id="cH8-LX-2ld"/>
+                                            <constraint firstAttribute="trailing" secondItem="85x-bJ-Gbq" secondAttribute="trailing" constant="15" id="gRZ-cQ-Ho7"/>
+                                            <constraint firstItem="ByO-zL-bbF" firstAttribute="leading" secondItem="P0F-I0-Fto" secondAttribute="leading" constant="30" id="kHm-f6-pCJ"/>
+                                            <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="85x-bJ-Gbq" secondAttribute="bottom" constant="100" id="lrb-Z4-0IC"/>
+                                            <constraint firstItem="S9u-EN-t3m" firstAttribute="top" secondItem="ByO-zL-bbF" secondAttribute="bottom" constant="25" id="o26-dd-on0"/>
+                                            <constraint firstItem="Ext-ju-Dds" firstAttribute="leading" secondItem="P0F-I0-Fto" secondAttribute="leading" constant="15" id="uEx-oD-AyP"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="P0F-I0-Fto" firstAttribute="leading" secondItem="i0o-06-ypd" secondAttribute="leading" id="AfY-sP-Hmw"/>
+                                    <constraint firstItem="P0F-I0-Fto" firstAttribute="width" secondItem="pAi-QZ-WBP" secondAttribute="width" id="SWa-a3-kRU"/>
+                                    <constraint firstItem="P0F-I0-Fto" firstAttribute="trailing" secondItem="i0o-06-ypd" secondAttribute="trailing" id="XIP-VD-Sl2"/>
+                                    <constraint firstItem="P0F-I0-Fto" firstAttribute="height" secondItem="pAi-QZ-WBP" secondAttribute="height" priority="250" id="uya-Dy-DaB"/>
+                                    <constraint firstItem="P0F-I0-Fto" firstAttribute="bottom" secondItem="i0o-06-ypd" secondAttribute="bottom" id="wsE-9c-U63"/>
+                                    <constraint firstItem="P0F-I0-Fto" firstAttribute="top" secondItem="i0o-06-ypd" secondAttribute="top" id="x3b-dq-xjE"/>
+                                </constraints>
+                                <viewLayoutGuide key="contentLayoutGuide" id="i0o-06-ypd"/>
+                                <viewLayoutGuide key="frameLayoutGuide" id="pAi-QZ-WBP"/>
+                            </scrollView>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="CES-9L-WTY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="rC8-za-xtz" firstAttribute="leading" secondItem="CES-9L-WTY" secondAttribute="leading" id="8Jk-O6-fgJ"/>
+                            <constraint firstItem="CES-9L-WTY" firstAttribute="trailing" secondItem="rC8-za-xtz" secondAttribute="trailing" id="aYR-Te-FTc"/>
+                            <constraint firstItem="CES-9L-WTY" firstAttribute="bottom" secondItem="rC8-za-xtz" secondAttribute="bottom" id="oni-AU-07g"/>
+                            <constraint firstItem="rC8-za-xtz" firstAttribute="top" secondItem="CES-9L-WTY" secondAttribute="top" id="rUn-Z9-IIN"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="6DR-0B-eVN">
+                        <leftBarButtonItems>
+                            <barButtonItem title="◀︎" id="ESl-I5-isL">
+                                <color key="tintColor" systemColor="systemPurpleColor"/>
+                                <connections>
+                                    <action selector="previousDateButtonTapped:" destination="aP2-qZ-IYL" id="1J3-ij-fMz"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem title="오늘 (10월 6일)" id="vw3-be-PWv">
+                                <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </barButtonItem>
+                            <barButtonItem title="▶︎" id="rms-aF-nj9">
+                                <color key="tintColor" systemColor="systemPurpleColor"/>
+                                <connections>
+                                    <action selector="nextDateButtonTapped:" destination="aP2-qZ-IYL" id="Afc-fd-dHv"/>
+                                </connections>
+                            </barButtonItem>
+                        </leftBarButtonItems>
                         <barButtonItem key="rightBarButtonItem" style="plain" id="pSH-t6-hg8">
                             <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="k56-CS-g8z">
-                                <rect key="frame" x="277" y="6" width="131" height="32"/>
+                                <rect key="frame" x="277" y="5.6666666666666679" width="131" height="33"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <segments>
-                                    <segment title="First"/>
-                                    <segment title="Second"/>
+                                    <segment title="일"/>
+                                    <segment title="월"/>
+                                    <segment title="년"/>
                                 </segments>
+                                <color key="selectedSegmentTintColor" systemColor="systemPurpleColor"/>
+                                <connections>
+                                    <action selector="segementedControlValueChanged:" destination="aP2-qZ-IYL" eventType="valueChanged" id="kQc-rT-Mwd"/>
+                                </connections>
                             </segmentedControl>
                         </barButtonItem>
                     </navigationItem>
+                    <size key="freeformSize" width="428" height="1500"/>
+                    <connections>
+                        <outlet property="categoryEarningPieChartView" destination="34w-EJ-gx4" id="qBG-kf-epC"/>
+                        <outlet property="categorySpendingPieChartView" destination="ByO-zL-bbF" id="AuI-CP-E6I"/>
+                        <outlet property="comparingBarChartLabel" destination="ixm-F2-2NR" id="L6b-Cg-dv8"/>
+                        <outlet property="comparingBarChartView" destination="85x-bJ-Gbq" id="BQe-me-OiQ"/>
+                        <outlet property="dateLabelBarButtonItem" destination="vw3-be-PWv" id="fkL-ba-bWq"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="82G-60-zcW" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1222" y="164"/>
+            <point key="canvasLocation" x="1221.0280373831774" y="163.93088552915768"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="VHc-K2-rQw">
