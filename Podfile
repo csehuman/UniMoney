@@ -7,4 +7,5 @@ target 'UniMoney' do
 
   # Pods for UniMoney
   pod 'RealmSwift', '~>10'
+  pod 'Charts'
 end
