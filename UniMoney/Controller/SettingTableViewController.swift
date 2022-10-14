@@ -6,84 +6,81 @@
 //
 
 import UIKit
+import UserNotifications
 
 class SettingTableViewController: UITableViewController {
-
+    @IBOutlet weak var notiCell: UITableViewCell!
+    @IBOutlet weak var askCell: UITableViewCell!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem
-    }
-
-    // MARK: - Table view data source
-
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 0
-    }
-
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return 0
-    }
-
-    /*
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
-
-        // Configure the cell...
-
-        return cell
-    }
-    */
-
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
-    }
-    */
-
-    /*
-    // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
+        
+        let v = UISwitch(frame: .zero)
+        v.onTintColor = .systemPurple
+        
+        UNUserNotificationCenter.current().getNotificationSettings { (settings) in
+          if settings.authorizationStatus == .authorized {
+              DispatchQueue.main.async {
+                  if UserDefaults.standard.bool(forKey: "notiSet") {
+                      v.isOn = true
+                  } else {
+                      v.isOn = false
+                  }
+              }
+          }
+          else {
+              DispatchQueue.main.async {
+                  v.isOn = false
+              }
+          }
+        }
+        notiCell.accessoryView = v
+        
+        v.addTarget(self, action: #selector(toggleNoti(_:)), for: .valueChanged)
 
     }
-    */
+    
+    @objc func toggleNoti(_ sender: UISwitch) {
+        if sender.isOn {
+            UNUserNotificationCenter.current().requestAuthorization(options: [.badge, .alert, .sound]) { [weak self] granted, error in
+                if granted {
+                    let content = UNMutableNotificationContent()
+                    content.title = "오늘의 가계부 작성을 완료하셨나요?"
+                    content.body = "유니머니로 오늘의 가계부를 작성해보세요."
+                    
+                    let calendar = Calendar.current
+                    var dateComponents = DateComponents()
+                    dateComponents.hour = 21
+                    dateComponents.minute = 00
+                    
+                    let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
+                    
+                    let request = UNNotificationRequest(identifier: "everyNightNoti", content: content, trigger: trigger)
+                    UNUserNotificationCenter.current().add(request) { error in
+                        if let error = error {
+                            print("ERROR \(String(describing: error.localizedDescription))")
+                        }
+                    }
+                    UserDefaults.standard.set(true, forKey: "notiSet")
+                } else {
+                    let alert = UIAlertController(title: "설정 > 유니미에서 알림을 허용해주세요.", message: nil, preferredStyle: .alert)
+                    let okAction = UIAlertAction(title: "확인", style: .default) { action in
+                        guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
 
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
+                        if UIApplication.shared.canOpenURL(url) {
+                            UIApplication.shared.open(url)
+                        }
+                    }
+                    alert.addAction(okAction)
+                    DispatchQueue.main.async {
+                        sender.isOn = false
+                        self?.present(alert, animated: true)
+                    }
+                }
+            }
+        } else {
+            UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+            UserDefaults.standard.set(false, forKey: "notiSet")
+        }
     }
-    */
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
