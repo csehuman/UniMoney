@@ -14,7 +14,6 @@ let initialLaunchKey = "initialLaunchKey"
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
         let config = Realm.Configuration(schemaVersion: 3)
         Realm.Configuration.defaultConfiguration = config
         
@@ -32,12 +31,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
             // print("Initial Launch")
             // print(Realm.Configuration.defaultConfiguration.fileURL!)
+            
             let content = UNMutableNotificationContent()
             content.title = "오늘의 가계부 작성을 완료하셨나요?"
             content.body = "유니머니로 오늘의 가계부를 작성해보세요."
             
             let calendar = Calendar.current
+            
             var dateComponents = DateComponents()
+            dateComponents.calendar = calendar
             dateComponents.hour = 21
             dateComponents.minute = 00
             

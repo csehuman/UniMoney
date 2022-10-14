@@ -12,7 +12,7 @@ class DataPopulation {
     static let shared = DataPopulation()
     private init() {}
     
-    let realm = try! Realm()
+    let realm = DataManager.shared.realm
     
     func setUpCategories() {
         let initialCategories = [

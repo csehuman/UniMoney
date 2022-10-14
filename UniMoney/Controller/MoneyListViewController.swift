@@ -53,6 +53,7 @@ class MoneyListViewController: UIViewController {
     let todayDate = Date()
     
     var token: NSObjectProtocol?
+    var tokens: [NSObjectProtocol]?
     
     var moneyRecords: Results<MoneyRecord>?
     
@@ -66,39 +67,12 @@ class MoneyListViewController: UIViewController {
     
     var inFilterState: Bool = false
     
-    let realm = DataPopulation.shared.realm
+    let realm = DataManager.shared.realm
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        spendingView.layer.cornerRadius = 5
-        spendingView.backgroundColor = .white
-        spendingView.layer.borderColor = UIColor.systemRed.cgColor
-        spendingView.layer.borderWidth = 0.5
-        
-        spentMoneyLabel.textColor = .systemRed
-        
-        earningView.layer.cornerRadius = 5
-        earningView.backgroundColor = .white
-        earningView.layer.borderColor = UIColor.systemPurple.cgColor
-        earningView.layer.borderWidth = 0.5
-        
-        earnedMoneyLabel.textColor = .systemPurple
-        
-        
-        addRecordButton.layer.cornerRadius = 10
-        
-        if #available(iOS 15.0, *) {
-            var configuration = UIButton.Configuration.filled()
-            configuration.title = "추가하기"
-            configuration.image = UIImage(systemName: "pencil")
-            configuration.imagePadding = 10
-            configuration.baseBackgroundColor = .systemPurple
-            
-            addRecordButton.configuration = configuration
-        } else {
-            // Fallback on earlier versions
-        }
+        configureInitialViewAndButton()
         
         tableView.dataSource = self
         tableView.delegate = self
@@ -106,35 +80,33 @@ class MoneyListViewController: UIViewController {
         let nibName = UINib(nibName: "MoneyTableViewCell", bundle: nil)
         tableView.register(nibName, forCellReuseIdentifier: "MoneyTableViewCell")
         
-        allSpendingCategories = realm.objects(Category.self).filter("type == %@", "지출").sorted(byKeyPath: "order", ascending: true)
-        allEarningCategories = realm.objects(Category.self).filter("type == %@", "수입").sorted(byKeyPath: "order", ascending: true)
-        allPaymentMethods = realm.objects(PaymentMethod.self).sorted(byKeyPath: "order", ascending: true)
+        allSpendingCategories = DataManager.shared.getAllSpendingCategories()
+        allEarningCategories = DataManager.shared.getAllEarningCategories()
+        allPaymentMethods = DataManager.shared.getAllPaymentMethods()
         
         selectedSpendingCategories = Array(allSpendingCategories!)
         selectedEarningCategories = Array(allEarningCategories!)
         selectedPaymentMethods = Array(allPaymentMethods!)
         
-        let now = Date()
-        let calendar = Calendar.current
+        let resultDate = DateManager.shared.getTodayDate()
         
-        guard let beginDate = calendar.date(bySettingHour: 0, minute: 0, second: 0, of: now) else { return }
-        guard let endDate = calendar.date(bySettingHour: 23, minute: 59, second: 59, of: now) else { return }
+        currentYearForDay = resultDate.0
+        currentMonthForDay = resultDate.1
+        currentDayForDay = resultDate.2
         
-        let components = calendar.dateComponents([.year, .month, .day], from: now)
-        currentYearForDay = components.year
-        currentMonthForDay = components.month
-        currentDayForDay = components.day
+        currentYearForMonth = resultDate.0
+        currentMonthForMonth = resultDate.1
         
-        currentYearForMonth = components.year
-        currentMonthForMonth = components.month
+        currentYearForYear = resultDate.0
         
-        currentYearForYear = components.year
+        let dateRange = DateManager.shared.getDayRange(year: currentYearForDay!, month: currentMonthForDay!, day: currentDayForDay!)
+        
+        let beginDate = dateRange.0
+        let endDate = dateRange.1
         
         moneyRecords = realm.objects(MoneyRecord.self)
             .filter("date BETWEEN {%@, %@}", beginDate, endDate)
             .sorted(byKeyPath: "date", ascending: false)
-        
-        dateLabelBarButtonItem.title = "오늘"
         
         configureLabels()
         
@@ -142,8 +114,11 @@ class MoneyListViewController: UIViewController {
             self?.configureLabels()
             self?.tableView.reloadData()
         }
+        tokens?.append(token!)
         
-        NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: "filterToMain"), object: nil, queue: OperationQueue.main) { [weak self] noti in
+        token = NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: "filterToMain"), object: nil, queue: OperationQueue.main) { [weak self] noti in
+            guard let self = self else { return }
+            
             guard let dict = noti.object as? [String: Any] else { return }
             guard let spentChecked = dict["spentChecked"] as? Bool else { return }
             guard let earnedChecked = dict["earnedChecked"] as? Bool else { return }
@@ -151,37 +126,35 @@ class MoneyListViewController: UIViewController {
             guard let earningCategories = dict["selectedEarningCategories"] as? [Category] else { return }
             guard let paymentMethods = dict["selectedPaymentMethods"] as? [PaymentMethod] else { return }
             
-            self?.selectedSpendingCategories = spendingCategories
-            self?.selectedEarningCategories = earningCategories
-            self?.selectedPaymentMethods = paymentMethods
+            self.selectedSpendingCategories = spendingCategories
+            self.selectedEarningCategories = earningCategories
+            self.selectedPaymentMethods = paymentMethods
             
-            self?.inFilterState = true
+            self.inFilterState = true
             
             if !spentChecked {
-                self?.selectedSpendingCategories = []
-                self?.filterButton.setTitle("수입 | 결제수단", for: .normal)
+                self.selectedSpendingCategories = []
+                self.filterButton.setTitle("수입 | 결제수단", for: .normal)
             } else if !earnedChecked {
-                self?.selectedEarningCategories = []
-                self?.filterButton.setTitle("지출 | 결제수단", for: .normal)
+                self.selectedEarningCategories = []
+                self.filterButton.setTitle("지출 | 결제수단", for: .normal)
             } else {
-                self?.filterButton.setTitle("지출 | 수입 | 결제수단", for: .normal)
+                self.filterButton.setTitle("지출 | 수입 | 결제수단", for: .normal)
             }
             
-            self?.filterCancelButton.isHidden = false
+            self.filterCancelButton.isHidden = false
             
-            if self?.currentDateMode == .day {
-                self?.updateTableViewForDay()
-            } else if self?.currentDateMode == .month {
-                self?.updateTableViewForMonth()
-            } else if self?.currentDateMode == .year {
-                self?.updateTableViewForYear()
-            }
+            self.tableView.reloadData()
+            self.configureLabels()
         }
+        tokens?.append(token!)
     }
     
     deinit {
-        if let token = token {
-            NotificationCenter.default.removeObserver(token)
+        if let tokens = tokens {
+            for token in tokens {
+                NotificationCenter.default.removeObserver(token)
+            }
         }
     }
     
@@ -201,16 +174,16 @@ class MoneyListViewController: UIViewController {
         switch sender.selectedSegmentIndex {
         case 0:
             currentDateMode = .day
-            updateTableViewForDay()
         case 1:
             currentDateMode = .month
-            updateTableViewForMonth()
         case 2:
             currentDateMode = .year
-            updateTableViewForYear()
         default:
             break
         }
+        
+        tableView.reloadData()
+        configureLabels()
     }
     
     @IBAction func filterCancelButtonTapped(_ sender: UIButton) {
@@ -223,121 +196,63 @@ class MoneyListViewController: UIViewController {
         selectedEarningCategories = Array(allEarningCategories!)
         selectedPaymentMethods = Array(allPaymentMethods!)
         
-        if currentDateMode == .day {
-            updateTableViewForDay()
-        } else if currentDateMode == .month {
-            updateTableViewForMonth()
-        } else if currentDateMode == .year {
-            updateTableViewForYear()
-        }
+        tableView.reloadData()
+        configureLabels()
     }
     
     
     @IBAction func previousDateButtonTapped(_ sender: UIBarButtonItem) {
         if inFilterState {
-            let alert = UIAlertController(title: "필터 해제 후 기간을 변경해주세요.", message: nil, preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "확인", style: .default))
-            present(alert, animated: true)
+            showFilterAlert()
         } else {
             switch currentDateMode {
             case .year:
-                currentYearForYear = currentYearForYear! - 1
-                updateTableViewForYear()
+                let result = DateManager.shared.getPreviousYear(year: currentYearForYear!)
+                currentYearForYear = result
             case .month:
-                if currentMonthForMonth == 1 {
-                    currentMonthForMonth = 12
-                    currentYearForMonth = currentYearForMonth! - 1
-                } else {
-                    currentMonthForMonth = currentMonthForMonth! - 1
-                }
-                updateTableViewForMonth()
+                let result = DateManager.shared.getPreviousMonth(year: currentYearForMonth!, month: currentMonthForMonth!)
+                currentYearForMonth = result.0
+                currentMonthForMonth = result.1
             case .day:
-                if currentDayForDay == 1 {
-                    if currentMonthForDay == 1 {
-                        currentMonthForDay = 12
-                        currentYearForDay = currentYearForDay! - 1
-                    } else {
-                        currentMonthForDay = currentMonthForDay! - 1
-                    }
-                    currentDayForDay = getLastDayOfMonthComponents(forMonth: currentMonthForDay!).day!
-                } else {
-                    currentDayForDay = currentDayForDay! - 1
-                }
-                updateTableViewForDay()
+                let result = DateManager.shared.getPreviousDay(year: currentYearForDay!, month: currentMonthForDay!, day: currentDayForDay!)
+                currentYearForDay = result.0
+                currentMonthForDay = result.1
+                currentDayForDay = result.2
             }
+            tableView.reloadData()
+            configureLabels()
         }
     }
     
     @IBAction func nextDateButtonTapped(_ sender: UIBarButtonItem) {
         if inFilterState {
-            let alert = UIAlertController(title: "필터 해제 후 기간을 변경해주세요.", message: nil, preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "확인", style: .default))
-            present(alert, animated: true)
+            showFilterAlert()
         } else {
             switch currentDateMode {
             case .year:
-                currentYearForYear = currentYearForYear! + 1
-                updateTableViewForYear()
+                let result = DateManager.shared.getNextYear(year: currentYearForYear!)
+                currentYearForYear = result
             case .month:
-                if currentMonthForMonth == 12 {
-                    currentMonthForMonth = 1
-                    currentYearForMonth = currentYearForMonth! + 1
-                } else {
-                    currentMonthForMonth = currentMonthForMonth! + 1
-                }
-                updateTableViewForMonth()
+                let result = DateManager.shared.getNextMonth(year: currentYearForMonth!, month: currentMonthForMonth!)
+                currentYearForMonth = result.0
+                currentMonthForMonth = result.1
             case .day:
-                if currentDayForDay == getLastDayOfMonthComponents(forMonth: currentMonthForDay!).day! {
-                    if currentMonthForDay == 12 {
-                        currentMonthForDay = 1
-                        currentYearForDay = currentYearForDay! + 1
-                    } else {
-                        currentMonthForDay = currentMonthForDay! + 1
-                    }
-                    currentDayForDay = 1
-                } else {
-                    currentDayForDay = currentDayForDay! + 1
-                }
-                updateTableViewForDay()
+                let result = DateManager.shared.getNextDay(year: currentYearForDay!, month: currentMonthForDay!, day: currentDayForDay!)
+                currentYearForDay = result.0
+                currentMonthForDay = result.1
+                currentDayForDay = result.2
             }
+            
+            tableView.reloadData()
+            configureLabels()
         }
     }
     
-    private func getLastDayOfMonthComponents(forMonth month: Int) -> DateComponents {
-        let dateComponents = ["year": 2001, "month": month, "day": 1, "hour": 0, "minute": 0, "second": 0]
-        let date = makeDate(from: dateComponents)
+    private func getDataForDay(year: Int, month: Int, day: Int) {
+        let dateRange = DateManager.shared.getDayRange(year: year, month: month, day: day)
         
-        let components = DateComponents(month: 1, second: -1)
-        let endMonth = Calendar(identifier: .gregorian).date(byAdding: components, to: date)!
-        let calendarDate = Calendar.current.dateComponents([.day], from: endMonth)
-        
-        return calendarDate
-    }
-    
-    private func makeDate(from components: [String: Int]) -> Date {
-        var dateComponents = DateComponents()
-        dateComponents.year = components["year"]
-        dateComponents.month = components["month"]
-        dateComponents.day = components["day"]
-        dateComponents.hour = components["hour"]
-        dateComponents.minute = components["minute"]
-        dateComponents.second = components["second"]
-        
-        let resultDate = Calendar(identifier: .gregorian).date(from: dateComponents)
-        
-        return resultDate!
-    }
-    
-    private func updateTableViewForDay() {
-        guard let currentYearForDay = currentYearForDay, let currentMonthForDay = currentMonthForDay, let currentDayForDay = currentDayForDay else {
-            return
-        }
-        
-        let beginDateComponents = ["year": currentYearForDay, "month": currentMonthForDay, "day": currentDayForDay, "hour": 0, "minute": 0, "second": 0]
-        let endDateComponents = ["year": currentYearForDay, "month": currentMonthForDay, "day": currentDayForDay, "hour": 23, "minute": 59, "second": 59]
-        
-        let beginDate = makeDate(from: beginDateComponents)
-        let endDate = makeDate(from: endDateComponents)
+        let beginDate = dateRange.0
+        let endDate = dateRange.1
         
         moneyRecords = realm.objects(MoneyRecord.self)
             .filter("date BETWEEN {%@, %@}", beginDate, endDate)
@@ -350,32 +265,13 @@ class MoneyListViewController: UIViewController {
                 $0.paymentMethod.in(selectedPaymentMethods)
             }
         }
-        
-        let todayComponents = Calendar.current.dateComponents([.year, .month, .day], from: todayDate)
-        
-        if todayComponents.year == currentYearForDay, todayComponents.month == currentMonthForDay, todayComponents.day == currentDayForDay {
-            dateLabelBarButtonItem.title = "오늘"
-        } else {
-            dateLabelBarButtonItem.title = beginDate.dateString
-        }
-        
-        configureLabels()
-        tableView.reloadData()
     }
     
-    private func updateTableViewForMonth() {
-        guard let currentYearForMonth = currentYearForMonth, let currentMonthForMonth = currentMonthForMonth else {
-            return
-        }
+    private func getDataForMonth(year: Int, month: Int) {
+        let dateRange = DateManager.shared.getMonthRange(year: year, month: month)
         
-        let beginDateComponents = ["year": currentYearForMonth, "month": currentMonthForMonth, "day": 1, "hour": 0, "minute": 0, "second": 0]
-        
-        let beginDate = makeDate(from: beginDateComponents)
-        let lastDayComponents = getLastDayOfMonthComponents(forMonth: currentMonthForMonth)
-        
-        let endDateComponents = ["year": currentYearForMonth, "month": currentMonthForMonth, "day": lastDayComponents.day!, "hour": 23, "minute": 59, "second": 59]
-        
-        let endDate = makeDate(from: endDateComponents)
+        let beginDate = dateRange.0
+        let endDate = dateRange.1
         
         moneyRecords = realm.objects(MoneyRecord.self)
             .filter("date BETWEEN {%@, %@}", beginDate, endDate)
@@ -388,29 +284,13 @@ class MoneyListViewController: UIViewController {
                 $0.paymentMethod.in(selectedPaymentMethods)
             }
         }
-        
-        let todayComponents = Calendar.current.dateComponents([.year, .month], from: todayDate)
-        
-        if todayComponents.year == currentYearForMonth {
-            dateLabelBarButtonItem.title = beginDate.monthString
-        } else {
-            dateLabelBarButtonItem.title = beginDate.yearMonthString
-        }
-        
-        configureLabels()
-        tableView.reloadData()
     }
     
-    private func updateTableViewForYear() {
-        guard let currentYearForYear = currentYearForYear else {
-            return
-        }
+    private func getDataForYear(year: Int) {
+        let dateRange = DateManager.shared.getYearRange(year: year)
         
-        let beginDateComponents = ["year": currentYearForYear, "month": 1, "day": 1, "hour": 0, "minute": 0, "second": 0]
-        let endDateComponents = ["year": currentYearForYear, "month": 12, "day": 31, "hour": 23, "minute": 59, "second": 59]
-        
-        let beginDate = makeDate(from: beginDateComponents)
-        let endDate = makeDate(from: endDateComponents)
+        let beginDate = dateRange.0
+        let endDate = dateRange.1
         
         moneyRecords = realm.objects(MoneyRecord.self)
             .filter("date BETWEEN {%@, %@}", beginDate, endDate)
@@ -423,11 +303,12 @@ class MoneyListViewController: UIViewController {
                 $0.paymentMethod.in(selectedPaymentMethods)
             }
         }
-        
-        dateLabelBarButtonItem.title = beginDate.yearString
-        
-        configureLabels()
-        tableView.reloadData()
+    }
+    
+    private func showFilterAlert() {
+        let alert = UIAlertController(title: "필터 해제 후 기간을 변경해주세요.", message: nil, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "확인", style: .default))
+        present(alert, animated: true)
     }
     
     private func configureLabels() {
@@ -457,11 +338,77 @@ class MoneyListViewController: UIViewController {
             totalLabel.text = "\(NSNumber(value: total).numberToText!)원"
             totalLabel.textColor = .systemRed
         }
+        
+        switch currentDateMode {
+        case .year:
+            let date = DateManager.shared.getDate(year: currentYearForYear!)
+            dateLabelBarButtonItem.title = date.yearString
+        case .month:
+            let todayComponents = DateManager.shared.getTodayDate()
+            let date = DateManager.shared.getDate(year: currentYearForMonth!, month: currentMonthForMonth!)
+            
+            if todayComponents.0 == currentYearForMonth {
+                dateLabelBarButtonItem.title = date.monthString
+            } else {
+                dateLabelBarButtonItem.title = date.yearMonthString
+            }
+        case .day:
+            let todayComponents = DateManager.shared.getTodayDate()
+            
+            if todayComponents.0 == currentYearForDay, todayComponents.1 == currentMonthForDay, todayComponents.2 == currentDayForDay {
+                dateLabelBarButtonItem.title = "오늘"
+            } else if todayComponents.0 == currentYearForDay {
+                let date = DateManager.shared.getDate(year: currentYearForDay!, month: currentMonthForDay!, day: currentDayForDay!)
+                dateLabelBarButtonItem.title = date.dateString
+            } else {
+                let date = DateManager.shared.getDate(year: currentYearForDay!, month: currentMonthForDay!, day: currentDayForDay!)
+                dateLabelBarButtonItem.title = date.yearMonthDayString
+            }
+        }
+    }
+    
+    private func configureInitialViewAndButton() {
+        spendingView.layer.cornerRadius = 5
+        spendingView.backgroundColor = .white
+        spendingView.layer.borderColor = UIColor.systemRed.cgColor
+        spendingView.layer.borderWidth = 0.5
+        
+        spentMoneyLabel.textColor = .systemRed
+        
+        earningView.layer.cornerRadius = 5
+        earningView.backgroundColor = .white
+        earningView.layer.borderColor = UIColor.systemPurple.cgColor
+        earningView.layer.borderWidth = 0.5
+        
+        earnedMoneyLabel.textColor = .systemPurple
+        
+        
+        addRecordButton.layer.cornerRadius = 10
+        
+        if #available(iOS 15.0, *) {
+            var configuration = UIButton.Configuration.filled()
+            configuration.title = "추가하기"
+            configuration.image = UIImage(systemName: "pencil")
+            configuration.imagePadding = 10
+            configuration.baseBackgroundColor = .systemPurple
+            
+            addRecordButton.configuration = configuration
+        }
     }
 }
 
 extension MoneyListViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        switch currentDateMode {
+        case .year:
+            getDataForYear(year: currentYearForYear!)
+        case .month:
+            getDataForMonth(year: currentYearForMonth!, month: currentMonthForMonth!)
+        case .day:
+            getDataForDay(year: currentYearForDay!, month: currentMonthForDay!, day: currentDayForDay!)
+        }
+        
+        
         let moneyRecordsCount = moneyRecords?.count ?? 0
         
         if moneyRecordsCount == 0 {
@@ -506,5 +453,28 @@ extension MoneyListViewController: UITableViewDataSource, UITableViewDelegate {
         moneyComposeVC.moneyRecordToEdit = moneyRecords?[indexPath.row]
         
         present(moneyComposeNavVC, animated: true)
+    }
+    
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let deleteAction = UIContextualAction(style: .destructive, title: "삭제") { (action, view, completion) in
+            guard let moneyRecord = self.moneyRecords?[indexPath.row] else { return }
+            try! self.realm.write {
+                self.realm.delete(moneyRecord)
+            }
+            self.tableView.deleteRows(at: [indexPath], with: .automatic)
+            completion(true)
+        }
+        deleteAction.image = UIImage(systemName: "trash")
+        
+        let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
+        
+        // cell 전체 swipe시 첫번째 action 실행
+        configuration.performsFirstActionWithFullSwipe = true
+        
+        return configuration
+    }
+    
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
     }
 }

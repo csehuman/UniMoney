@@ -138,6 +138,9 @@ class MoneyComposeViewController: UIViewController {
     }
     
     @IBAction func saveButtonTapped(_ sender: UIButton) {
+        myValue = moneyValueTextField.text?.textToNumber?.intValue
+        myContent = moneyContentTextField.text?.count ?? 0 > 0 ? moneyContentTextField.text : nil
+        
         guard let myValue = myValue, let myContent = myContent, let myCategory = myCategory, let myPaymentMethod = myPaymentMethod, let myDate = myDate else {
             showAlertIfEmpty(value: myValue, content: myContent, category: myCategory, paymentMethod: myPaymentMethod)
             return
@@ -266,9 +269,8 @@ extension MoneyComposeViewController: UITextFieldDelegate {
         case moneyValueTextField:
             moneyValueHelperImageView.alpha = 1.0
             moneyValueTextField.layer.sublayers = []
-            myValue = moneyValueTextField.text?.textToNumber?.intValue
         case moneyContentTextField:
-            myContent = moneyContentTextField.text?.count ?? 0 > 0 ? moneyContentTextField.text : nil
+            return
         case moneyCategoryTextField:
             categoryView.isHidden = true
         case moneyPaymentMethodTextField:
