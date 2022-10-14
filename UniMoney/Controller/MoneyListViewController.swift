@@ -338,8 +338,6 @@ class MoneyListViewController: UIViewController {
         let beginDate = makeDate(from: beginDateComponents)
         let endDate = makeDate(from: endDateComponents)
         
-        print(beginDate, endDate)
-        
         moneyRecords = realm.objects(MoneyRecord.self)
             .filter("date BETWEEN {%@, %@}", beginDate, endDate)
             .sorted(byKeyPath: "date", ascending: false)
@@ -378,8 +376,6 @@ class MoneyListViewController: UIViewController {
         
         let endDate = makeDate(from: endDateComponents)
         
-        print(beginDate, endDate)
-        
         moneyRecords = realm.objects(MoneyRecord.self)
             .filter("date BETWEEN {%@, %@}", beginDate, endDate)
             .sorted(byKeyPath: "date", ascending: false)
@@ -414,8 +410,6 @@ class MoneyListViewController: UIViewController {
         
         let beginDate = makeDate(from: beginDateComponents)
         let endDate = makeDate(from: endDateComponents)
-        
-        print(beginDate, endDate)
         
         moneyRecords = realm.objects(MoneyRecord.self)
             .filter("date BETWEEN {%@, %@}", beginDate, endDate)

@@ -41,7 +41,11 @@ class MoneyAnalysisViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
         allSpendingCategories = realm.objects(Category.self).filter("type == %@", "지출").sorted(byKeyPath: "order", ascending: true)
         allEarningCategories = realm.objects(Category.self).filter("type == %@", "수입").sorted(byKeyPath: "order", ascending: true)
         
@@ -173,7 +177,7 @@ class MoneyAnalysisViewController: UIViewController {
                     .filter("category == %@", category)
                     .sum(ofProperty: "value")
                 let percentage = Double(spendingWithThisCategory) / Double(total)
-                if percentage < 0.05 {
+                if percentage < 0.01 {
                     self.others += percentage
                     return
                 }
@@ -327,8 +331,6 @@ class MoneyAnalysisViewController: UIViewController {
         let beginDate = dateRange.0
         let endDate = dateRange.1
         
-        print(beginDate, endDate)
-        
         moneyRecords = realm.objects(MoneyRecord.self)
             .filter("date BETWEEN {%@, %@}", beginDate, endDate)
     }
@@ -339,8 +341,6 @@ class MoneyAnalysisViewController: UIViewController {
         let beginDate = dateRange.0
         let endDate = dateRange.1
         
-        print(beginDate, endDate)
-        
         moneyRecords = realm.objects(MoneyRecord.self)
             .filter("date BETWEEN {%@, %@}", beginDate, endDate)
     }
@@ -350,8 +350,6 @@ class MoneyAnalysisViewController: UIViewController {
         
         let beginDate = dateRange.0
         let endDate = dateRange.1
-        
-        print(beginDate, endDate)
         
         moneyRecords = realm.objects(MoneyRecord.self)
             .filter("date BETWEEN {%@, %@}", beginDate, endDate)
